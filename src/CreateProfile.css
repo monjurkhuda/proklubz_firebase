@@ -1,0 +1,33 @@
+.createprofile__container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 500px;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.createprofile__system__timezone {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.createprofile__position__positionrating {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.createprofile__select {
+  margin: 5px;
+  padding: 6px;
+}
+
+.createprofile__button {
+  display: flex;
+  margin: auto;
+  margin-top: 10px;
+
+  padding: 10px;
+}

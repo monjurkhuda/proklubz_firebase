@@ -1,0 +1,92 @@
+.manageclub__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80%;
+  margin: auto;
+}
+
+.editclub__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.editclub__system__timezone {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.editclub__select {
+  margin: 5px;
+  padding: 6px;
+}
+
+.editclub__select__playstyle {
+  margin-top: 5px;
+  padding: 6px;
+  height: 60px;
+  resize: none;
+  font-size: 16px;
+}
+
+.open__positions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.open__positions__checkbox {
+  margin-right: 4px;
+  margin-left: 4px;
+  margin-bottom: 4px;
+}
+
+.manageclub__buttons {
+  display: flex;
+}
+
+.manageclub__save__button {
+  margin: auto;
+  margin-top: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: #096cff;
+  border-radius: 5px;
+  border: none;
+}
+
+.manageclub__cancel__button {
+  margin: auto;
+  margin-top: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: #f32c52;
+  border-radius: 5px;
+  border: none;
+}
+
+.deleteclub__button {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 20px;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: #d60027;
+  border-radius: 5px;
+  border: dashed;
+}

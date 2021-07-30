@@ -1,0 +1,64 @@
+.editprofile__container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 500px;
+  margin: auto;
+}
+
+.edit__system__timezone {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.edit__position__positionrating {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.edit__select {
+  margin: 5px;
+  padding: 6px;
+}
+
+.edit__select__playstyle {
+  margin-top: 5px;
+  padding: 6px;
+  height: 60px;
+  resize: none;
+  font-size: 16px;
+}
+
+.edit__buttons {
+  display: flex;
+}
+
+.edit__save__button {
+  margin: auto;
+  margin-top: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: #096cff;
+  border-radius: 5px;
+  border: none;
+}
+
+.edit__cancel__button {
+  margin: auto;
+  margin-top: 10px;
+  height: fit-content;
+  width: fit-content;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  background: #f32c52;
+  border-radius: 5px;
+  border: none;
+}

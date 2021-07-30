@@ -1,0 +1,49 @@
+.nav__container {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.nav__search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 6px;
+  background-color: #09309c;
+}
+
+.nav__navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #1949ce;
+}
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification__box {
+  display: flex;
+  flex-direction: row;
+}
+
+.notifications__circle {
+  background-color: red;
+  width: 23px;
+  height: 23px;
+  text-align: center;
+  font-weight: 700;
+  color: white;
+  border-radius: 50%;
+}
+
+.navtext {
+  color: white;
+  font-family: monospace;
+  font-weight: 400;
+}

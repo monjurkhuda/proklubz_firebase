@@ -1,0 +1,16 @@
+.positionratingtd {
+  width: fit-content;
+  white-space: nowrap;
+  background-color: rgb(53, 167, 59);
+  color: white;
+  font-weight: 600;
+}
+
+.usernametd {
+  width: 100%;
+}
+
+.buttontd {
+  padding: 4px 8px 4px 8px;
+  font-family: monospace;
+}

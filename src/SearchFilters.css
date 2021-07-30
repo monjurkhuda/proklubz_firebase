@@ -1,0 +1,13 @@
+.search__filters__container {
+  display: flex;
+  flex-direction: column;
+  width: 94%;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.search__select {
+  margin-right: 6px;
+  margin-top: 10px;
+  padding: 4px;
+}

@@ -1,0 +1,25 @@
+.createclub__container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.createclub__system__timezone {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.createclub__select {
+  margin: 5px;
+  padding: 6px;
+}
+
+.createclub__button {
+  display: flex;
+  margin: auto;
+  margin-top: 10px;
+  padding: 10px;
+}
