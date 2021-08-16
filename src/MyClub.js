@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import axios from "axios";
 import firebaseApp from "./firebase";
 import Navigation from "./Navigation";
 import Lineup from "./Lineup";
@@ -9,81 +8,61 @@ import "./MyClub.css";
 
 function MyClub() {
   const [clubid, setClubid] = useState("");
+  const [managerid, setManagerid] = useState("");
   const [system, setSystem] = useState("");
   const [clubname, setClubname] = useState("");
   const [timezone, setTimezone] = useState("");
   const [playstyle, setPlaystyle] = useState("");
-  const [isManager, setIsManager] = useState(false);
-  const [lineupObj, setLineupObj] = useState({ players: "" });
+  const [isLoading, setLoading] = useState(true);
 
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
   const history = useHistory();
+  const db = firebaseApp.database();
+  const userRef = db.ref().child("users/" + userid);
+
+  let lineupArray = [];
+  let isManager = false;
+
+  userRef.once("value", (snapshot) => {
+    setClubid(snapshot.val().clubid);
+  });
+
+  const clubRef = db.ref().child("clubs/" + clubid);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-      .then((currentUser) => {
-        const idOfClub = currentUser.data[0].clubid;
-        setClubid(idOfClub);
-        return idOfClub;
-      })
-      .then((idOfClub) => {
-        axios
-          .get("http://localhost:5000/clubs/clubid/" + idOfClub)
-          .then((myClub) => {
-            console.log(myClub);
-            if (myClub.data.length > 0) {
-              setClubname(myClub.data[0].clubname);
-              setSystem(myClub.data[0].system);
-              setTimezone(myClub.data[0].timezone);
-              setPlaystyle(myClub.data[0].playstyle);
+    clubRef.once("value", (snapshot) => {
+      setClubname(snapshot.val().clubname);
+      setSystem(snapshot.val().system);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setManagerid(snapshot.val().managerid);
+      setLoading(false);
+    });
+  }, [clubname, system, timezone, playstyle, managerid]);
 
-              const lineupObjExtractor = myClub.data[0].players;
+  const lineupRef = db.ref().child("lineups/" + clubid);
+  const lineupPlayerRef = db.ref().child("lineups/" + clubid + "/" + userid);
 
-              if (lineupObjExtractor.length > 0) {
-                setLineupObj({ players: lineupObjExtractor });
-              } else {
-                setLineupObj({ players: "" });
-              }
+  lineupRef.on("value", async function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      lineupArray.push(childSnapshot.key);
+    });
+  });
 
-              if (myClub.data[0].managerfirebaseid === firebaseid) {
-                setIsManager(true);
-              }
-            } else {
-              setClubid(false);
-            }
-          });
-      });
-  }, []);
+  console.log(lineupArray);
+
+  if (managerid === userid) {
+    isManager = true;
+  }
 
   function manageClub() {
     history.push("/manageclub");
   }
 
   function leaveClub() {
-    const removeClubid = {
-      clubid: "",
-    };
-
-    axios
-      .post(
-        "http://localhost:5000/users/updateclubid/" + firebaseid,
-        removeClubid
-      )
-      .then((res) => console.log(res.data));
-
-    const removePlayerFromClub = {
-      playerFbid: firebaseid,
-    };
-
-    axios
-      .post(
-        "http://localhost:5000/clubs/removeplayer/" + clubid,
-        removePlayerFromClub
-      )
-      .then((res) => console.log(res.data));
-
-    window.location.reload();
+    userRef.update({ clubid: "" });
+    lineupPlayerRef.remove();
+    history.push("/myclub");
   }
 
   function systemStyler(sys) {
@@ -99,6 +78,10 @@ function MyClub() {
       default:
         break;
     }
+  }
+
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
   }
 
   function myClubRenderer() {
@@ -137,12 +120,12 @@ function MyClub() {
           <div className="lineup__container">
             <table>
               <tbody>
-                {Array.from(lineupObj.players).map((playerlist) => {
+                {lineupArray.map((userid) => {
                   return (
                     <Lineup
-                      playerFbid={playerlist.playerFbid}
+                      userid={userid}
                       isManager={isManager}
-                      managerFbid={firebaseid}
+                      managerid={managerid}
                       clubid={clubid}
                     />
                   );

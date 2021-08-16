@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import firebaseApp from "./firebase.js";
 import Navigation from "./Navigation";
 import "./EditProfile.css";
@@ -15,30 +14,26 @@ function EditProfile() {
   const [redditusername, setRedditusername] = useState("");
 
   const history = useHistory();
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const profileRef = db.ref("users/" + userid);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-      .then((currentUser) => {
-        console.log(currentUser);
-        setUsername(currentUser.data[0].username);
-        setSystem(currentUser.data[0].system);
-        setPrimaryposition(currentUser.data[0].primaryposition);
-        setPrimarypositionrating(currentUser.data[0].primarypositionrating);
-        setTimezone(currentUser.data[0].timezone);
-        setPlaystyle(currentUser.data[0].playstyle);
-        setRedditusername(currentUser.data[0].redditusername);
-      });
+    profileRef.once("value", (snapshot) => {
+      setUsername(snapshot.val().username);
+      setSystem(snapshot.val().system);
+      setPrimaryposition(snapshot.val().primaryposition);
+      setPrimarypositionrating(snapshot.val().primarypositionrating);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setRedditusername(snapshot.val().redditusername);
+    });
   }, []);
 
   function saveHandler(e) {
     e.preventDefault();
 
-    console.log(firebaseid);
-    console.log(system);
-
-    const user = {
+    profileRef.update({
       system: system,
       username: username,
       primaryposition: primaryposition,
@@ -46,12 +41,7 @@ function EditProfile() {
       timezone: timezone,
       playstyle: playstyle,
       redditusername: redditusername,
-    };
-    console.log(user);
-
-    axios
-      .post("http://localhost:5000/users/update/" + firebaseid, user)
-      .then((res) => console.log(res.data));
+    });
 
     history.push("/");
   }

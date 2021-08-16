@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import firebaseApp from "./firebase.js";
 import "./CreateProfile.css";
 
@@ -15,12 +14,14 @@ function CreateProfile() {
   const [redditusername, setRedditusername] = useState("");
 
   const history = useHistory();
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const userRef = db.ref().child("users/" + userid);
 
   function createProfileHandler(e) {
     e.preventDefault();
 
-    const user = {
+    userRef.set({
       system: system,
       username: username,
       primaryposition: primaryposition,
@@ -28,24 +29,12 @@ function CreateProfile() {
       timezone: timezone,
       playstyle: playstyle,
       clubid: clubid,
-      firebaseid: firebaseid,
       redditusername: redditusername,
-    };
-    console.log(user);
-
-    axios
-      .post("http://localhost:5000/users/add", user)
-      .then((res) => console.log(res.data))
-      .catch((err) => {
-        console.log(err);
-      });
+    });
 
     setTimeout(() => {
       history.push("/");
     }, 200);
-
-    //Refreshing page, otherwise useState doesn't get data to render fast enough and I get error. Maybe optimize this
-    //window.location.reload();
   }
 
   return (
@@ -60,7 +49,7 @@ function CreateProfile() {
           </option>
           <option value="xboxone">Xbox One</option>
           <option value="ps5">PS5</option>
-          <option value="xbox">Xbox (4th Gen)</option>
+          <option value="xboxseriesx">Xbox Series X</option>
           <option value="pc">PC</option>
         </select>
 

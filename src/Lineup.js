@@ -11,17 +11,20 @@ function Lineup(props) {
   const [timezone, setTimezone] = useState("");
 
   const history = useHistory();
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const currentUserid = firebaseApp.auth().currentUser.uid;
 
-  const playerFbid = props.playerFbid;
+  const userid = props.userid;
   const isManager = props.isManager;
-  const managerFbid = props.managerFbid;
+  const managerid = props.managerid;
   const clubid = props.clubid;
 
-  console.log(props);
+  const db = firebaseApp.database();
+  const userRef = db.ref().child("users/" + userid);
+  const lineupPlayerRef = db.ref().child("lineups/" + clubid + "/" + userid);
+  const clubRef = db.ref().child("clubs/" + clubid);
 
   function hideRemoveAndMakeManagerButtons() {
-    if (!isManager || playerFbid === managerFbid) {
+    if (!isManager || userid === managerid) {
       return true;
     } else {
       return false;
@@ -29,64 +32,23 @@ function Lineup(props) {
   }
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/firebaseid/" + playerFbid)
-      .then((res) => {
-        if (res.data.length > 0) {
-          setUsername(res.data[0].username);
-          setPrimaryposition(res.data[0].primaryposition);
-          setPrimarypositionrating(res.data[0].primarypositionrating);
-          setTimezone(res.data[0].timezone);
-        }
-      });
+    userRef.once("value", (snapshot) => {
+      setUsername(snapshot.val().username);
+      setPrimaryposition(snapshot.val().primaryposition);
+      setPrimarypositionrating(snapshot.val().primarypositionrating);
+      setTimezone(snapshot.val().timezone);
+    });
   }, []);
 
   function removePlayer() {
-    if (window.confirm("Are you sure you want to kick this player?")) {
-      const playerRemovalChanges = {
-        clubid: "",
-      };
-      axios
-        .post(
-          "http://localhost:5000/users/updateclubid/" + playerFbid,
-          playerRemovalChanges
-        )
-        .then((res) => console.log(res.data));
-
-      const removePlayerFromClub = {
-        playerFbid: playerFbid,
-      };
-
-      axios
-        .post(
-          "http://localhost:5000/clubs/removeplayer/" + clubid,
-          removePlayerFromClub
-        )
-        .then((res) => console.log(res.data));
-
-      window.location.reload();
-    }
+    userRef.update({ clubid: "" });
+    lineupPlayerRef.remove();
+    history.push("/myclub");
   }
 
   function makeManager() {
-    if (
-      window.confirm(
-        "Are you sure you want to make this player manager? You will loose control of the club."
-      )
-    ) {
-      const makePlayerManager = {
-        playerFbid: playerFbid,
-      };
-
-      axios
-        .post(
-          "http://localhost:5000/clubs/changemanager/" + managerFbid,
-          makePlayerManager
-        )
-        .then((res) => console.log(res.data));
-
-      window.location.reload();
-    }
+    clubRef.update({ managerid: userid });
+    window.location.reload();
   }
 
   return (
@@ -94,7 +56,7 @@ function Lineup(props) {
       <td className="positiontd">{primaryposition}</td>
       <td className="positionratingtd">{primarypositionrating}</td>
       <td className="usernametd">
-        <Link style={{ textDecoration: "none" }} to={`/users/${playerFbid}`}>
+        <Link style={{ textDecoration: "none" }} to={`/users/${userid}`}>
           {username}
         </Link>
       </td>

@@ -12,66 +12,34 @@ function CreateClub() {
   const [playstyle, setPlaystyle] = useState("");
 
   const history = useHistory();
-  const managerfirebaseid = firebaseApp.auth().currentUser.uid;
+  const managerid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const clubRef = db.ref("clubs/");
+  const userRef = db.ref().child("users/" + managerid);
 
   function createClubHandler(e) {
     e.preventDefault();
 
-    const club = {
-      system: system,
-      clubname: clubname,
-      timezone: timezone,
-      playstyle: playstyle,
-      managerfirebaseid: managerfirebaseid,
-    };
-    console.log(club);
+    //creates a club as well as grab the key to be used as clubid
+    const clubid = clubRef
+      .push({
+        system: system,
+        clubname: clubname,
+        timezone: timezone,
+        playstyle: playstyle,
+        managerid: managerid,
+      })
+      .getKey();
 
-    axios
-      .post("http://localhost:5000/clubs/add", club)
-      .then((res) => console.log(res.data))
-      .catch((err) =>
-        alert(
-          err +
-            " --> Failed to create Club! Try a new name. Or, maybe you already have a club :)"
-        )
-      )
-      .then(() => {
-        axios
-          .get(
-            "http://localhost:5000/clubs/managerfirebaseid/" + managerfirebaseid
-          )
-          .then((myClub) => {
-            const clubid = myClub.data[0]._id;
-            return clubid;
-          })
-          .then((clubid) => {
-            const onContractUser = {
-              clubid: clubid,
-            };
+    userRef.update({
+      clubid: clubid,
+    });
 
-            axios
-              .post(
-                "http://localhost:5000/users/updateclubid/" + managerfirebaseid,
-                onContractUser
-              )
-              .then((res) => console.log(res.data));
+    const lineupRef = db.ref().child("lineups/" + clubid + "/" + managerid);
 
-            const addPlayerToClub = {
-              playerFbid: managerfirebaseid,
-            };
+    lineupRef.set(managerid);
 
-            axios
-              .post(
-                "http://localhost:5000/clubs/addplayer/" + managerfirebaseid,
-                addPlayerToClub
-              )
-              .then((res) => console.log(res.data));
-          });
-      });
-
-    setTimeout(() => {
-      history.push("/myclub");
-    }, 200);
+    history.push("/myclub");
   }
 
   return (

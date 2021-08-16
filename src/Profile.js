@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import firebaseApp from "./firebase";
 import { SiReddit } from "react-icons/si";
@@ -16,30 +15,19 @@ function Profile() {
   const [playstyle, setPlaystyle] = useState();
   const [redditusername, setRedditusername] = useState();
 
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const profileRef = db.ref("users/" + userid);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-      .then((currentUser) => {
-        setUsername(currentUser.data[0].username);
-        setSystem(currentUser.data[0].system);
-        setPrimaryposition(currentUser.data[0].primaryposition);
-        setPrimarypositionrating(currentUser.data[0].primarypositionrating);
-        setTimezone(currentUser.data[0].timezone);
-        setPlaystyle(currentUser.data[0].playstyle);
-        setRedditusername(currentUser.data[0].redditusername);
-      });
-  }, [
-    system,
-    username,
-    primaryposition,
-    primarypositionrating,
-    timezone,
-    playstyle,
-    firebaseid,
-    redditusername,
-  ]);
+  profileRef.once("value", (snapshot) => {
+    setUsername(snapshot.val().username);
+    setSystem(snapshot.val().system);
+    setPrimaryposition(snapshot.val().primaryposition);
+    setPrimarypositionrating(snapshot.val().primarypositionrating);
+    setTimezone(snapshot.val().timezone);
+    setPlaystyle(snapshot.val().playstyle);
+    setRedditusername(snapshot.val().redditusername);
+  });
 
   function systemStyler(sys) {
     switch (sys) {
