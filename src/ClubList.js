@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import firebaseApp from "./firebase";
 import { Link } from "react-router-dom";
 import "./ClubList.css";
 import { SiReddit } from "react-icons/si";
@@ -8,47 +8,67 @@ function ClubList(props) {
   const [disabledInviteButton, setDisabledInviteButton] = useState(false);
   const [redditusername, setRedditusername] = useState("");
   const [managerusername, setManagerusername] = useState("");
-
-  console.log(props);
+  const [managerid, setManagerid] = useState("");
+  const [system, setSystem] = useState("");
+  const [clubname, setClubname] = useState("");
+  const [timezone, setTimezone] = useState("");
+  const [playstyle, setPlaystyle] = useState("");
 
   const senderFbid = props.senderFbid;
-  const receiverFbid = props.receiverFbid;
-  const clubname = props.clubname;
+  // const receiverFbid = props.receiverFbid;
+  const clubid = props.clubid;
+  console.log(props);
 
-  const notification = {
-    notificationFromFirebaseId: senderFbid,
-    notificationType: "REQUEST_TO_JOIN",
-  };
+  const db = firebaseApp.database();
+  const clubRef = db.ref().child("clubs/" + clubid);
+
+  useEffect(() => {
+    clubRef.once("value", (snapshot) => {
+      setClubname(snapshot.val().clubname);
+      setSystem(snapshot.val().system);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setManagerid(snapshot.val().managerid);
+    });
+  }, []);
+
+  console.log(clubname, system, timezone, playstyle, managerid);
+
+  // const notification = {
+  //   notificationFromFirebaseId: senderFbid,
+  //   notificationType: "REQUEST_TO_JOIN",
+  // };
 
   function requestToJoin() {
-    axios
-      .post(
-        "http://localhost:5000/users/notification/" + receiverFbid,
-        notification
-      )
-      .then((res) => console.log(res.data));
-    setDisabledInviteButton(true);
+    // axios
+    //   .post(
+    //     "http://localhost:5000/users/notification/" + receiverFbid,
+    //     notification
+    //   )
+    //   .then((res) => console.log(res.data));
+    // setDisabledInviteButton(true);
   }
 
-  axios
-    .get("http://localhost:5000/users/firebaseid/" + receiverFbid)
-    .then((loadedUser) => {
-      setRedditusername(loadedUser.data[0].redditusername);
-      setManagerusername(loadedUser.data[0].username);
-    });
+  // axios
+  //   .get("http://localhost:5000/users/firebaseid/" + receiverFbid)
+  //   .then((loadedUser) => {
+  //     setRedditusername(loadedUser.data[0].redditusername);
+  //     setManagerusername(loadedUser.data[0].username);
+  //   });
 
-  function hideRedditMessage() {
-    return redditusername.length === 0 ? true : false;
-  }
+  // function hideRedditMessage() {
+  //   return redditusername.length === 0 ? true : false;
+  // }
 
   return (
     <tr>
       <td className="clubnametd">
-        <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverFbid}`}>
+        {clubid}
+        {/* <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverFbid}`}>
           {clubname}
-        </Link>
+        </Link> */}
       </td>
-      <td className="timezonetd">{props.timezone}</td>
+      <td className="timezonetd">{timezone}</td>
       <td>
         <button
           className="table__button"
@@ -64,7 +84,7 @@ function ClubList(props) {
         >
           <button
             className="table__reddit__button"
-            disabled={hideRedditMessage()}
+            //disabled={hideRedditMessage()}
           >
             <SiReddit size="1.8em" />
           </button>
