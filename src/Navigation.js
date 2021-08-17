@@ -14,12 +14,12 @@ const Navigation = () => {
 
   const firebaseid = firebaseApp.auth().currentUser.uid;
 
-  axios
-    .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-    .then((currentUser) => {
-      setNotificationCount(currentUser.data[0].notifications.length);
-      setUsername(currentUser.data[0].username);
-    });
+  // axios
+  //   .get("http://localhost:5000/users/firebaseid/" + firebaseid)
+  //   .then((currentUser) => {
+  //     setNotificationCount(currentUser.data[0].notifications.length);
+  //     setUsername(currentUser.data[0].username);
+  //   });
 
   function notificationCircleShow() {
     if (notificationCount > 0) {

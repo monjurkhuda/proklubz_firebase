@@ -46,7 +46,9 @@ function MyClub() {
   lineupRef.on("value", async function (snapshot) {
     snapshot.forEach(function (childSnapshot) {
       lineupArray.push(childSnapshot.key);
+      console.log(childSnapshot);
     });
+    console.log(lineupArray);
   });
 
   if (managerid === userid) {

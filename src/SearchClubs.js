@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ClubList from "./ClubList";
 import Navigation from "./Navigation";
@@ -13,45 +13,43 @@ function SearchClubs() {
   const [clubFilteredArray, setClubFilteredArray] = useState([]);
 
   const senderFirebaseid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const clubRef = db.ref("clubs/");
+  let clubArray = [];
 
   function searchHandler(e) {
     e.preventDefault();
+    setClubFilteredArray([""]);
 
-    console.log(system + "/" + timezone);
-
-    axios
-      .get("http://localhost:5000/clubs/searchclub/" + system + "/" + timezone)
-      .then((response) => {
-        const clubResponseArray = response.data;
-        console.log("clubResponseArray", clubResponseArray);
-        var clubFilterer = clubResponseArray.filter(function (club) {
-          console.log(availablePos, club[availablePos]);
-          return club[availablePos] === "yes";
+    clubRef
+      .orderByChild(availablePos)
+      .equalTo("yes")
+      .on("value", function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          if (
+            childSnapshot.val().system === system &&
+            childSnapshot.val().timezone === timezone
+          ) {
+            clubArray.push(childSnapshot.key);
+            console.log(childSnapshot);
+          }
         });
-        console.log("clubFilterer", clubFilterer);
-
-        if (clubResponseArray.length > 0) {
-          setClubFilteredArray(clubFilterer);
-          console.log("clubFiltererArray", clubFilteredArray);
-        }
-      })
-      .catch((error) => {
-        alert("No clubs found :(");
+        setClubFilteredArray(clubArray);
       });
   }
 
   function searchByClubname(e) {
     e.preventDefault();
 
-    axios
-      .get("http://localhost:5000/clubs/searchclubbyname/" + clubname)
-      .then((response) => {
-        console.log(response);
-        const clubResponseArray = response.data;
-        if (clubResponseArray.length > 0) {
-          setClubFilteredArray(clubResponseArray);
-          console.log("clubFiltererArray", clubFilteredArray);
-        }
+    clubRef
+      .orderByChild("clubname")
+      .equalTo(clubname)
+      .on("value", function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          clubArray.push(childSnapshot.key);
+          console.log(childSnapshot);
+        });
+        setClubFilteredArray(clubArray);
       });
   }
 
@@ -71,8 +69,6 @@ function SearchClubs() {
         return "N/A";
     }
   }
-
-  console.log("clubFilteredArray Outside", clubFilteredArray);
 
   return (
     <div className="search__container">
@@ -136,14 +132,15 @@ function SearchClubs() {
 
       <table>
         <tbody>
-          {clubFilteredArray.map((clublist) => {
+          {clubFilteredArray.map((clubid) => {
             return (
               <ClubList
-                key={clublist._id}
-                system={systemSwitcher(clublist.system)}
-                clubname={clublist.clubname}
-                timezone={clublist.timezone}
-                receiverFbid={clublist.managerfirebaseid}
+                key={clubid}
+                clubid={clubid}
+                //   // system={systemSwitcher(clublist.system)}
+                //   // clubname={clublist.clubname}
+                //   // timezone={clublist.timezone}
+                //   // receiverFbid={clublist.managerfirebaseid}
                 senderFbid={senderFirebaseid}
               />
             );
