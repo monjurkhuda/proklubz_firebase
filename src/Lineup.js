@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import firebaseApp from "./firebase";
 import { Link, useHistory } from "react-router-dom";
 import "./Lineup.css";
@@ -51,9 +50,11 @@ function Lineup(props) {
     window.location.reload();
   }
 
+  console.log(primaryposition);
+
   return (
     <tr>
-      <td className="positiontd">{primaryposition}</td>
+      <td className={primaryposition}>{primaryposition}</td>
       <td className="positionratingtd">{primarypositionrating}</td>
       <td className="usernametd">
         <Link style={{ textDecoration: "none" }} to={`/users/${userid}`}>

@@ -28,6 +28,10 @@ function CreateClub() {
         timezone: timezone,
         playstyle: playstyle,
         managerid: managerid,
+        wantany: "yes",
+        wantgk: "no",
+        wantrb: "no",
+        wantcb: "no",
       })
       .getKey();
 

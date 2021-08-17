@@ -1,8 +1,18 @@
-.positionratingtd {
+/* .positionratingtd {
   width: fit-content;
   white-space: nowrap;
   background-color: rgb(53, 167, 59);
   color: white;
+  font-weight: 600;
+} */
+
+.GK {
+  background-color: rgb(255, 219, 59);
+  font-weight: 600;
+}
+
+.CB {
+  background-color: rgb(255, 82, 82);
   font-weight: 600;
 }
 
