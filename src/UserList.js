@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import firebaseApp from "./firebase";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { BiShieldQuarter } from "react-icons/bi";
@@ -6,53 +7,117 @@ import { SiReddit } from "react-icons/si";
 import "./UserList.css";
 
 function UserList(props) {
+  const [clubid, setClubid] = useState("");
+  const [playstyle, setPlaystyle] = useState();
+  const [primaryposition, setPrimaryposition] = useState();
+  const [primarypositionrating, setPrimarypositionrating] = useState();
+  const [redditusername, setRedditusername] = useState("");
+  const [system, setSystem] = useState();
+  const [timezone, setTimezone] = useState();
+  const [username, setUsername] = useState();
+  const [clubname, setClubname] = useState();
+  const [managerClubname, setManagerClubname] = useState();
   const [disabledInviteButton, setDisabledInviteButton] = useState(false);
-  const [clubname, setClubname] = useState("");
-  const senderFbid = props.senderFbid;
-  const receiverFbid = props.receiverFbid;
-  const username = props.username;
-  const clubid = props.clubid;
-  const redditusername = props.redditusername;
-  console.log(props);
 
-  axios.get("http://localhost:5000/clubs/" + clubid).then((res) => {
-    if (res.data?.length > 0) {
-      setClubname(res.data[0].clubname);
-    }
-  });
+  const userid = props.userid;
+  const senderid = props.senderid;
+  const db = firebaseApp.database();
+  const userRef = db.ref().child("users/" + userid);
 
-  const notification = {
-    notificationFromFirebaseId: senderFbid,
-    notificationType: "INVITE_TO_CLUB",
-  };
+  useEffect(() => {
+    userRef.once("value", (snapshot) => {
+      setClubid(snapshot.val().clubid);
+      setPlaystyle(snapshot.val().playstyle);
+      setPrimaryposition(snapshot.val().primaryposition);
+      setPrimarypositionrating(snapshot.val().primarypositionrating);
+      setRedditusername(snapshot.val().redditusername);
+      setSystem(snapshot.val().system);
+      setTimezone(snapshot.val().timezone);
+      setUsername(snapshot.val().username);
+    });
+
+    const managerClubRef = db.ref("clubs/");
+    managerClubRef
+      .orderByChild("managerid")
+      .equalTo("jIlhKWg6bRMY3E5Vi1ippx4F2T53")
+      .on("value", function (snapshot) {
+        const managerClubname = snapshot.val().clubname;
+      });
+    console.log(managerClubRef);
+    setManagerClubname(managerClubname);
+  }, [
+    clubid,
+    playstyle,
+    primaryposition,
+    primarypositionrating,
+    redditusername,
+    system,
+    timezone,
+    username,
+    managerClubname,
+  ]);
+
+  console.log(
+    clubid,
+    playstyle,
+    primaryposition,
+    primarypositionrating,
+    redditusername,
+    system,
+    timezone,
+    username,
+    senderid,
+    managerClubname
+  );
+
+  const notifRef = db.ref().child("notifications/" + userid);
+
+  // axios.get("http://localhost:5000/clubs/" + clubid).then((res) => {
+  //   if (res.data?.length > 0) {
+  //     setClubname(res.data[0].clubname);
+  //   }
+  // });
+
+  // const notification = {
+  //   notificationFromFirebaseId: senderFbid,
+  //   notificationType: "INVITE_TO_CLUB",
+  // };
 
   function invitePlayer() {
-    axios
-      .get("http://localhost:5000/clubs/managerfirebaseid/" + senderFbid)
-      .then((res) => {
-        console.log(res);
-        console.log(res.data.length);
-        if (res.data.length > 0) {
-          axios
-            .post(
-              "http://localhost:5000/users/notification/" + receiverFbid,
-              notification
-            )
-            .then((res) => console.log(res.data));
-
-          setDisabledInviteButton(true);
-        } else {
-          alert("You don't have a club to invite to!");
-        }
+    if (managerClubname?.length > 0) {
+      notifRef.push({
+        notiftype: "INVITE_TO_CLUB",
+        senderid: senderid,
       });
+    } else {
+      alert("You don't have a club to invite to!");
+    }
+    setDisabledInviteButton(true);
+    // axios
+    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + senderFbid)
+    //   .then((res) => {
+    //     console.log(res);
+    //     console.log(res.data.length);
+    //     if (res.data.length > 0) {
+    //       axios
+    //         .post(
+    //           "http://localhost:5000/users/notification/" + receiverFbid,
+    //           notification
+    //         )
+    //         .then((res) => console.log(res.data));
+    //       setDisabledInviteButton(true);
+    //     } else {
+    //       alert("You don't have a club to invite to!");
+    //     }
+    //   });
   }
 
   function hideRedditMessage() {
-    return redditusername.length === 0 ? true : false;
+    return redditusername?.length === 0 ? true : false;
   }
 
   function clubBadgeShow() {
-    if (clubname.length > 0) {
+    if (clubid?.length > 0) {
       return <BiShieldQuarter size="1.6em" color="darkgreen" />;
     } else {
       return "";
@@ -61,10 +126,10 @@ function UserList(props) {
 
   return (
     <tr>
-      <td>{props.primaryposition}</td>
-      <td className="positionratingtd">{props.primarypositionrating}</td>
+      <td>{primaryposition}</td>
+      <td className="positionratingtd">{primarypositionrating}</td>
       <td className="usernametd">
-        <Link style={{ textDecoration: "none" }} to={`/users/${receiverFbid}`}>
+        <Link style={{ textDecoration: "none" }} to={`/users/${userid}`}>
           {username}
         </Link>
       </td>
@@ -84,9 +149,9 @@ function UserList(props) {
         >
           <button
             className="table__reddit__button"
-            disabled={hideRedditMessage()}
+            hidden={hideRedditMessage()}
           >
-            <SiReddit size="1.8em" />
+            {hideRedditMessage() ? null : <SiReddit size="1.6em" />}
           </button>
         </a>
       </td>

@@ -5,20 +5,16 @@ import "./ClubList.css";
 import { SiReddit } from "react-icons/si";
 
 function ClubList(props) {
-  const [disabledInviteButton, setDisabledInviteButton] = useState(false);
+  const [disabledJoinButton, setDisabledJoinButton] = useState(false);
   const [redditusername, setRedditusername] = useState("");
-  const [managerusername, setManagerusername] = useState("");
   const [managerid, setManagerid] = useState("");
   const [system, setSystem] = useState("");
   const [clubname, setClubname] = useState("");
   const [timezone, setTimezone] = useState("");
   const [playstyle, setPlaystyle] = useState("");
 
-  const senderFbid = props.senderFbid;
-
+  const senderid = props.senderid;
   const clubid = props.clubid;
-  console.log(props);
-
   const db = firebaseApp.database();
   const clubRef = db.ref().child("clubs/" + clubid);
 
@@ -37,31 +33,16 @@ function ClubList(props) {
     });
   }, [clubname, system, timezone, playstyle, managerid, redditusername]);
 
-  console.log(clubname, system, timezone, playstyle, managerid, redditusername);
-
-  const receiverFbid = managerid;
-
-  // const notification = {
-  //   notificationFromFirebaseId: senderFbid,
-  //   notificationType: "REQUEST_TO_JOIN",
-  // };
+  const receiverid = managerid;
+  const notifRef = db.ref().child("notifications/" + receiverid);
 
   function requestToJoin() {
-    // axios
-    //   .post(
-    //     "http://localhost:5000/users/notification/" + receiverFbid,
-    //     notification
-    //   )
-    //   .then((res) => console.log(res.data));
-    // setDisabledInviteButton(true);
+    notifRef.push({
+      notiftype: "REQUEST_TO_JOIN",
+      senderid: senderid,
+    });
+    setDisabledJoinButton(true);
   }
-
-  // axios
-  //   .get("http://localhost:5000/users/firebaseid/" + receiverFbid)
-  //   .then((loadedUser) => {
-  //     setRedditusername(loadedUser.data[0].redditusername);
-  //     setManagerusername(loadedUser.data[0].username);
-  //   });
 
   function hideRedditMessage() {
     return redditusername?.length === 0 ? true : false;
@@ -70,7 +51,7 @@ function ClubList(props) {
   return (
     <tr>
       <td className="clubnametd">
-        <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverFbid}`}>
+        <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverid}`}>
           {clubname}
         </Link>
       </td>
@@ -79,7 +60,7 @@ function ClubList(props) {
         <button
           className="table__button"
           onClick={() => requestToJoin()}
-          disabled={disabledInviteButton}
+          disabled={disabledJoinButton}
         >
           Join
         </button>

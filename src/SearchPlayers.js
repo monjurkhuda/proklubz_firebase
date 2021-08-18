@@ -11,35 +11,54 @@ function SearchPlayers() {
   const [primaryposition, setPrimaryposition] = useState("GK");
   const [timezone, setTimezone] = useState("EST");
   const [usersObj, setUsersObj] = useState({ user: "" });
+  const [userFilteredArray, setUserFilteredArray] = useState([]);
 
-  const senderFirebaseid = firebaseApp.auth().currentUser.uid;
+  const senderid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const userRef = db.ref("users/");
+  let userArray = [];
 
   function searchHandler(e) {
     e.preventDefault();
 
-    console.log(usersObj.user.length);
-
-    axios
-      .get(
-        "http://localhost:5000/users/searchuser/" +
-          system +
-          "/" +
-          primaryposition +
-          "/" +
-          timezone
-      )
-      .then((response) => {
-        console.log(response);
-        if (response.data.length > 0) {
-          setUsersObj({
-            user: response.data,
-          });
-        } else {
-          setUsersObj({
-            user: "",
-          });
-        }
+    userRef
+      .orderByChild("primaryposition")
+      .equalTo(primaryposition)
+      .on("value", function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          if (
+            childSnapshot.val().system === system &&
+            childSnapshot.val().timezone === timezone
+          ) {
+            userArray.push(childSnapshot.key);
+            console.log(childSnapshot.val().username);
+          }
+        });
+        setUserFilteredArray(userArray);
       });
+
+    // console.log(usersObj.user.length);
+    // axios
+    //   .get(
+    //     "http://localhost:5000/users/searchuser/" +
+    //       system +
+    //       "/" +
+    //       primaryposition +
+    //       "/" +
+    //       timezone
+    //   )
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.data.length > 0) {
+    //       setUsersObj({
+    //         user: response.data,
+    //       });
+    //     } else {
+    //       setUsersObj({
+    //         user: "",
+    //       });
+    //     }
+    //   });
   }
 
   function searchByUsername(e) {
@@ -139,19 +158,20 @@ function SearchPlayers() {
 
       <table>
         <tbody>
-          {Array.from(usersObj.user).map((userlist) => {
+          {userFilteredArray.map((userid) => {
             return (
               <UserList
-                key={userlist._id}
-                system={systemSwitcher(userlist.system)}
-                username={userlist.username}
-                redditusername={userlist.redditusername}
-                clubid={userlist.clubid}
-                primaryposition={userlist.primaryposition}
-                primarypositionrating={userlist.primarypositionrating}
-                timezone={userlist.timezone}
-                receiverFbid={userlist.firebaseid}
-                senderFbid={senderFirebaseid}
+                key={userid}
+                userid={userid}
+                // system={systemSwitcher(userlist.system)}
+                // username={userlist.username}
+                // redditusername={userlist.redditusername}
+                // clubid={userlist.clubid}
+                // primaryposition={userlist.primaryposition}
+                // primarypositionrating={userlist.primarypositionrating}
+                // timezone={userlist.timezone}
+                // receiverFbid={userlist.firebaseid}
+                senderid={senderid}
               />
             );
           })}

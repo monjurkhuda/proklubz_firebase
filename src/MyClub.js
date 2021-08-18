@@ -27,9 +27,7 @@ function MyClub() {
     userRef.once("value", (snapshot) => {
       setClubid(snapshot.val().clubid);
     });
-
     const clubRef = db.ref().child("clubs/" + clubid);
-
     clubRef.once("value", (snapshot) => {
       setClubname(snapshot.val().clubname);
       setSystem(snapshot.val().system);

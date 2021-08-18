@@ -12,7 +12,7 @@ function SearchClubs() {
   const [availablePos, setAvailablePos] = useState("wantany");
   const [clubFilteredArray, setClubFilteredArray] = useState([]);
 
-  const senderFirebaseid = firebaseApp.auth().currentUser.uid;
+  const senderid = firebaseApp.auth().currentUser.uid;
   const db = firebaseApp.database();
   const clubRef = db.ref("clubs/");
   let clubArray = [];
@@ -141,7 +141,7 @@ function SearchClubs() {
                 //   // clubname={clublist.clubname}
                 //   // timezone={clublist.timezone}
                 //   // receiverFbid={clublist.managerfirebaseid}
-                senderFbid={senderFirebaseid}
+                senderid={senderid}
               />
             );
           })}
