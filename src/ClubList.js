@@ -90,9 +90,9 @@ function ClubList(props) {
         >
           <button
             className="table__reddit__button"
-            disabled={hideRedditMessage()}
+            hidden={hideRedditMessage()}
           >
-            Reddit
+            {hideRedditMessage() ? null : <SiReddit size="1.6em" />}
           </button>
         </a>
       </td>
