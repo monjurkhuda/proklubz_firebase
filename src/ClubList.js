@@ -15,7 +15,7 @@ function ClubList(props) {
   const [playstyle, setPlaystyle] = useState("");
 
   const senderFbid = props.senderFbid;
-  // const receiverFbid = props.receiverFbid;
+
   const clubid = props.clubid;
   console.log(props);
 
@@ -30,9 +30,16 @@ function ClubList(props) {
       setPlaystyle(snapshot.val().playstyle);
       setManagerid(snapshot.val().managerid);
     });
-  }, []);
 
-  console.log(clubname, system, timezone, playstyle, managerid);
+    const managerRef = db.ref().child("users/" + managerid);
+    managerRef.once("value", (snapshot) => {
+      setRedditusername(snapshot.val().redditusername);
+    });
+  }, [clubname, system, timezone, playstyle, managerid, redditusername]);
+
+  console.log(clubname, system, timezone, playstyle, managerid, redditusername);
+
+  const receiverFbid = managerid;
 
   // const notification = {
   //   notificationFromFirebaseId: senderFbid,
@@ -56,17 +63,16 @@ function ClubList(props) {
   //     setManagerusername(loadedUser.data[0].username);
   //   });
 
-  // function hideRedditMessage() {
-  //   return redditusername.length === 0 ? true : false;
-  // }
+  function hideRedditMessage() {
+    return redditusername?.length === 0 ? true : false;
+  }
 
   return (
     <tr>
       <td className="clubnametd">
-        {clubid}
-        {/* <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverFbid}`}>
+        <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverFbid}`}>
           {clubname}
-        </Link> */}
+        </Link>
       </td>
       <td className="timezonetd">{timezone}</td>
       <td>
@@ -84,9 +90,9 @@ function ClubList(props) {
         >
           <button
             className="table__reddit__button"
-            //disabled={hideRedditMessage()}
+            disabled={hideRedditMessage()}
           >
-            <SiReddit size="1.8em" />
+            Reddit
           </button>
         </a>
       </td>
