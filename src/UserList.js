@@ -23,6 +23,9 @@ function UserList(props) {
   const senderid = props.senderid;
   const db = firebaseApp.database();
   const userRef = db.ref().child("users/" + userid);
+  const managerClubRef = db.ref("clubs/");
+
+  //let managerClub = "";
 
   useEffect(() => {
     userRef.once("value", (snapshot) => {
@@ -36,15 +39,15 @@ function UserList(props) {
       setUsername(snapshot.val().username);
     });
 
-    const managerClubRef = db.ref("clubs/");
     managerClubRef
       .orderByChild("managerid")
-      .equalTo("jIlhKWg6bRMY3E5Vi1ippx4F2T53")
+      .equalTo(senderid)
       .on("value", function (snapshot) {
-        const managerClubname = snapshot.val().clubname;
+        snapshot.forEach(function (childSnapshot) {
+          const managerClub = childSnapshot.val().clubname;
+          setManagerClubname(managerClub);
+        });
       });
-    console.log(managerClubRef);
-    setManagerClubname(managerClubname);
   }, [
     clubid,
     playstyle,
