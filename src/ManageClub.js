@@ -6,6 +6,7 @@ import Navigation from "./Navigation";
 import "./ManageClub.css";
 
 function ManageClub() {
+  const [clubid, setClubid] = useState("");
   const [system, setSystem] = useState("");
   const [clubname, setClubname] = useState("");
   const [timezone, setTimezone] = useState("");
@@ -16,28 +17,67 @@ function ManageClub() {
   const [wantcb, setWantcb] = useState("");
   const [isLoading, setLoading] = useState(true);
 
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
   const history = useHistory();
+  const db = firebaseApp.database();
+  const userRef = db.ref("users/" + userid);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/clubs/managerfirebaseid/" + firebaseid)
-      .then((club) => {
-        setSystem(club.data[0].system);
-        setClubname(club.data[0].clubname);
-        setTimezone(club.data[0].timezone);
-        setPlaystyle(club.data[0].playstyle);
-        setWantany(club.data[0].wantany);
-        setWantgk(club.data[0].wantgk);
-        setWantrb(club.data[0].wantrb);
-        setWantcb(club.data[0].wantcb);
-        setLoading(false);
-      });
-  }, []);
+    userRef.once("value", (snapshot) => {
+      setClubid(snapshot.val().clubid);
+    });
+    const clubRef = db.ref().child("clubs/" + clubid);
+    clubRef.once("value", (snapshot) => {
+      setClubname(snapshot.val().clubname);
+      setSystem(snapshot.val().system);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setWantany(snapshot.val().wantany);
+      setWantgk(snapshot.val().wantgk);
+      setWantrb(snapshot.val().wantrb);
+      setWantcb(snapshot.val().wantcb);
+      setLoading(false);
+    });
+  }, [clubid]);
+
+  const clubRef = db.ref().child("clubs/" + clubid);
+  const lineupRef = db.ref().child("lineups/" + clubid);
+
+  console.log(clubRef);
+
+  console.log(
+    clubid,
+    clubname,
+    system,
+    timezone,
+    playstyle,
+    wantany,
+    wantgk,
+    wantcb,
+    wantrb
+  );
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5000/clubs/managerfirebaseid/" + userid)
+  //     .then((club) => {
+  //       setSystem(club.data[0].system);
+  //       setClubname(club.data[0].clubname);
+  //       setTimezone(club.data[0].timezone);
+  //       setPlaystyle(club.data[0].playstyle);
+  //       setWantany(club.data[0].wantany);
+  //       setWantgk(club.data[0].wantgk);
+  //       setWantrb(club.data[0].wantrb);
+  //       setWantcb(club.data[0].wantcb);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   function posAvailabilitySetter(e) {
     const position = e.target.name;
     const checked = e.target.checked;
+
+    console.log("pos: " + position, "check: " + checked);
 
     switch (position) {
       case "any":
@@ -75,38 +115,53 @@ function ManageClub() {
       default:
         break;
     }
+
+    console.log(wantany, wantgk, wantcb, wantrb);
   }
 
   function deleteClub() {
     if (window.confirm("Are you sure you want to delete your club?")) {
-      axios
-        .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-        .then((res) => {
-          console.log(res);
-          const clubid = res.data[0].clubid;
-          axios.delete("http://localhost:5000/clubs/" + clubid);
-          history.push("/myclub");
-        });
+      clubRef.set({});
+      lineupRef.set({});
+      userRef.update({ clubid: "" });
+      history.push("/myclub");
+
+      // axios
+      //   .get("http://localhost:5000/users/firebaseid/" + userid)
+      //   .then((res) => {
+      //     console.log(res);
+      //     const clubid = res.data[0].clubid;
+      //     axios.delete("http://localhost:5000/clubs/" + clubid);
+      //     history.push("/myclub");
+      //   });
     }
   }
 
   function saveHandler(e) {
     e.preventDefault();
 
-    const club = {
+    console.log(
+      clubid,
+      clubname,
+      system,
+      timezone,
+      playstyle,
+      wantany,
+      wantgk,
+      wantcb,
+      wantrb
+    );
+
+    clubRef.update({
       system: system,
       clubname: clubname,
       timezone: timezone,
       playstyle: playstyle,
       wantany: wantany,
       wantgk: wantgk,
-      wantrb: wantrb,
       wantcb: wantcb,
-    };
-
-    axios
-      .post("http://localhost:5000/clubs/update/" + firebaseid, club)
-      .then((res) => console.log(res.data));
+      wantrb: wantrb,
+    });
 
     history.push("/myclub");
   }
@@ -119,8 +174,6 @@ function ManageClub() {
   if (isLoading) {
     return <div className="App">Loading...</div>;
   }
-
-  console.log(wantgk);
 
   return (
     <div>

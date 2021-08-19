@@ -30,8 +30,8 @@ function CreateClub() {
         managerid: managerid,
         wantany: "yes",
         wantgk: "no",
-        wantrb: "no",
         wantcb: "no",
+        wantrb: "no",
       })
       .getKey();
 

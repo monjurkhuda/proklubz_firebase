@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import firebaseApp from "./firebase";
 import { SiReddit } from "react-icons/si";
@@ -19,15 +19,25 @@ function Profile() {
   const db = firebaseApp.database();
   const profileRef = db.ref("users/" + userid);
 
-  profileRef.once("value", (snapshot) => {
-    setUsername(snapshot.val().username);
-    setSystem(snapshot.val().system);
-    setPrimaryposition(snapshot.val().primaryposition);
-    setPrimarypositionrating(snapshot.val().primarypositionrating);
-    setTimezone(snapshot.val().timezone);
-    setPlaystyle(snapshot.val().playstyle);
-    setRedditusername(snapshot.val().redditusername);
-  });
+  useEffect(() => {
+    profileRef.once("value", (snapshot) => {
+      setUsername(snapshot.val().username);
+      setSystem(snapshot.val().system);
+      setPrimaryposition(snapshot.val().primaryposition);
+      setPrimarypositionrating(snapshot.val().primarypositionrating);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setRedditusername(snapshot.val().redditusername);
+    });
+  }, [
+    playstyle,
+    primaryposition,
+    primarypositionrating,
+    redditusername,
+    system,
+    timezone,
+    username,
+  ]);
 
   function systemStyler(sys) {
     switch (sys) {

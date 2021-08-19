@@ -7,24 +7,34 @@ import "./Notifications.css";
 
 function Notifications() {
   const [notificationObj, setNotificationObj] = useState({ notifications: "" });
+  const [notifFilteredArray, setNotifFilteredArray] = useState([]);
 
-  const firebaseId = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const notifRef = db.ref().child("notifications/" + userid);
+  let notifArray = [];
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/users/firebaseid/" + firebaseId)
-      .then((response) => {
-        const notificationObjExtractor = response.data[0].notifications;
-
-        if (notificationObjExtractor.length > 0) {
-          setNotificationObj({ notifications: notificationObjExtractor });
-        } else {
-          setNotificationObj({ notifications: "" });
-        }
+    notifRef.once("value", (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        notifArray.push(childSnapshot.key);
       });
+      setNotifFilteredArray(notifArray);
+    });
+
+    // axios
+    //   .get("http://localhost:5000/users/firebaseid/" + firebaseId)
+    //   .then((response) => {
+    //     const notificationObjExtractor = response.data[0].notifications;
+    //     if (notificationObjExtractor.length > 0) {
+    //       setNotificationObj({ notifications: notificationObjExtractor });
+    //     } else {
+    //       setNotificationObj({ notifications: "" });
+    //     }
+    //   });
   }, []);
 
-  console.log(notificationObj);
+  console.log(notifFilteredArray);
 
   return (
     <div className="notifications__container">
@@ -32,16 +42,9 @@ function Notifications() {
       <div>
         <table className="notificationtable">
           <tbody>
-            {Array.from(notificationObj.notifications).map(
-              (notificationlist) => {
-                return (
-                  <NotificationList
-                    type={notificationlist.notificationType}
-                    fromFirebaseId={notificationlist.notificationFromFirebaseId}
-                  />
-                );
-              }
-            )}
+            {notifFilteredArray.map((notifid) => {
+              return <NotificationList key={notifid} notifid={notifid} />;
+            })}
           </tbody>
         </table>
       </div>

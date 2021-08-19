@@ -27,7 +27,9 @@ function MyClub() {
     userRef.once("value", (snapshot) => {
       setClubid(snapshot.val().clubid);
     });
+
     const clubRef = db.ref().child("clubs/" + clubid);
+
     clubRef.once("value", (snapshot) => {
       setClubname(snapshot.val().clubname);
       setSystem(snapshot.val().system);
@@ -60,7 +62,7 @@ function MyClub() {
   function leaveClub() {
     userRef.update({ clubid: "" });
     lineupPlayerRef.remove();
-    history.push("/myclub");
+    history.push("/");
   }
 
   function systemStyler(sys) {
