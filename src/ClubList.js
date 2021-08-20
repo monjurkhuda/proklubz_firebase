@@ -37,10 +37,19 @@ function ClubList(props) {
   const notifRef = db.ref().child("notifications/" + receiverid);
 
   function requestToJoin() {
-    notifRef.push({
-      notiftype: "REQUEST_TO_JOIN",
-      senderid: senderid,
-    });
+    notifRef
+      .orderByChild("senderid")
+      .equalTo(senderid)
+      .on("value", async function (snapshot) {
+        const doesSnapshotHaveData = await snapshot.val();
+        if (!doesSnapshotHaveData) {
+          notifRef.push({
+            notiftype: "REQUEST_TO_JOIN",
+            senderid: senderid,
+          });
+        }
+      });
+
     setDisabledJoinButton(true);
   }
 
