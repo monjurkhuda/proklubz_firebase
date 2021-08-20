@@ -40,7 +40,7 @@ function ClubList(props) {
     notifRef
       .orderByChild("senderid")
       .equalTo(senderid)
-      .on("value", async function (snapshot) {
+      .once("value", async function (snapshot) {
         const doesSnapshotHaveData = await snapshot.val();
         if (!doesSnapshotHaveData) {
           notifRef.push({
@@ -49,7 +49,6 @@ function ClubList(props) {
           });
         }
       });
-
     setDisabledJoinButton(true);
   }
 
@@ -71,7 +70,7 @@ function ClubList(props) {
           onClick={() => requestToJoin()}
           disabled={disabledJoinButton}
         >
-          Join
+          Join Request
         </button>
       </td>
       <td>

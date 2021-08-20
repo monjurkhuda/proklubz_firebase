@@ -9,9 +9,10 @@ function NotificationList(props) {
   const [senderUsername, setSenderUsername] = useState("");
   const [senderClubid, setSenderClubid] = useState("");
   const [senderid, setSenderid] = useState("");
+  const [myClubid, setMyClubid] = useState("");
   const [notifType, setNotifType] = useState("");
 
-  const userid = firebaseApp.auth().currentUser.uid;
+  const myid = firebaseApp.auth().currentUser.uid;
   const notifid = props.notifid;
   //const notificationType = props.type;
   // const fromFirebaseId = props.fromFirebaseId;
@@ -19,7 +20,9 @@ function NotificationList(props) {
   const db = firebaseApp.database();
   const specificNotifRef = db
     .ref()
-    .child("notifications/" + userid + "/" + notifid);
+    .child("notifications/" + myid + "/" + notifid);
+  const myRef = db.ref().child("users/" + myid);
+  const clubRef = db.ref("/clubs");
 
   // const notification = {
   //   notificationFromFirebaseId: fromFirebaseId,
@@ -39,11 +42,17 @@ function NotificationList(props) {
       setSenderClubid(senderSnapshot.val().clubid);
     });
 
+    console.log("senderClubid", senderClubid);
+
     const senderClubRef = db.ref().child("clubs/" + senderClubid);
     senderClubRef.once("value", (clubSnapshot) => {
       clubSnapshot.forEach((childSnapshot) => {
         setSenderClubname(childSnapshot.val().clubname);
       });
+    });
+
+    myRef.once("value", (senderSnapshot) => {
+      setMyClubid(senderSnapshot.val().clubid);
     });
     // axios
     //   .get("http://localhost:5000/users/firebaseid/" + fromFirebaseId)
@@ -73,6 +82,19 @@ function NotificationList(props) {
   // }, []);
 
   function acceptPlayer() {
+    const senderRef = db.ref().child("users/" + senderid);
+    senderRef.update({
+      clubid: myClubid,
+    });
+
+    const myLineupRef = db.ref().child("lineups/" + myClubid + "/" + senderid);
+    myLineupRef.set(senderid);
+
+    specificNotifRef.set({});
+
+    //Refreshing page to show cleared notifications
+    window.location.reload();
+
     // axios
     //   .get("http://localhost:5000/clubs/managerfirebaseid/" + firebaseid)
     //   .then((res) => {
@@ -114,6 +136,10 @@ function NotificationList(props) {
   }
 
   function rejectPlayer() {
+    specificNotifRef.set({});
+
+    //Refreshing page to show cleared notifications
+    window.location.reload();
     // axios
     //   .post(
     //     "http://localhost:5000/users/clearonenotification/" + firebaseid,
@@ -127,8 +153,22 @@ function NotificationList(props) {
   }
 
   function acceptClub() {
-    // console.log("accept club");
     // //Check if user is manager
+    clubRef
+      .orderByChild("managerid")
+      .equalTo(myid)
+      .once("value", async function (snapshot) {
+        const doesSnapshotHaveData = await snapshot.val();
+        if (doesSnapshotHaveData) {
+          alert(
+            "You must delete your club or hand over manager rights to a club member before you can join another club."
+          );
+          return;
+        }
+      });
+
+    // console.log("accept club");
+    //Check if user is manager
     // axios
     //   .get("http://localhost:5000/clubs/managerfirebaseid/" + firebaseid)
     //   .then((res) => {
@@ -169,6 +209,10 @@ function NotificationList(props) {
   }
 
   function rejectClub() {
+    specificNotifRef.set({});
+
+    //Refreshing page to show cleared notifications
+    window.location.reload();
     // axios
     //   .post(
     //     "http://localhost:5000/users/clearonenotification/" + firebaseid,
