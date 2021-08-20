@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import firebaseApp from "./firebase";
 import axios from "axios";
@@ -9,10 +9,20 @@ import { RiUserSearchLine } from "react-icons/ri";
 import { AiOutlineFileSearch } from "react-icons/ai";
 
 const Navigation = () => {
-  const [notificationCount, setNotificationCount] = useState(0);
+  //const [notifCount, setNotifCount] = useState(0);
   const [username, setUsername] = useState("");
 
-  const firebaseid = firebaseApp.auth().currentUser.uid;
+  const userid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const notifRef = db.ref().child("notifications/" + userid);
+  console.log(notifRef, notifRef.length);
+  let notifCount = 0;
+
+  notifRef.on("value", function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      notifCount++;
+    });
+  });
 
   // axios
   //   .get("http://localhost:5000/users/firebaseid/" + firebaseid)
@@ -22,12 +32,12 @@ const Navigation = () => {
   //   });
 
   function notificationCircleShow() {
-    if (notificationCount > 0) {
-      return <div className="notifications__circle">{notificationCount}</div>;
+    if (notifCount > 0) {
+      return <div className="notifications__circle">{notifCount}</div>;
     } else {
       return (
         <div hidden className="notifications__circle">
-          {notificationCount}
+          {notifCount}
         </div>
       );
     }

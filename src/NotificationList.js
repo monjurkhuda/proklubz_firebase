@@ -13,7 +13,7 @@ function NotificationList(props) {
 
   const userid = firebaseApp.auth().currentUser.uid;
   const notifid = props.notifid;
-  const notificationType = props.type;
+  //const notificationType = props.type;
   // const fromFirebaseId = props.fromFirebaseId;
   const history = useHistory();
   const db = firebaseApp.database();

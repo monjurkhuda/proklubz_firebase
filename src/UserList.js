@@ -18,9 +18,11 @@ function UserList(props) {
   const [clubname, setClubname] = useState();
   const [managerClubname, setManagerClubname] = useState();
   const [disabledInviteButton, setDisabledInviteButton] = useState(false);
+  const [inviteSentAlready, setInviteSentAlready] = useState(true);
 
   const userid = props.userid;
   const senderid = props.senderid;
+  let prevSenderid;
   const db = firebaseApp.database();
   const userRef = db.ref().child("users/" + userid);
   const managerClubRef = db.ref("clubs/");
@@ -88,10 +90,18 @@ function UserList(props) {
 
   function invitePlayer() {
     if (managerClubname?.length > 0) {
-      notifRef.push({
-        notiftype: "INVITE_TO_CLUB",
-        senderid: senderid,
-      });
+      notifRef
+        .orderByChild("senderid")
+        .equalTo(senderid)
+        .on("value", async function (snapshot) {
+          const doesSnapshotHaveData = await snapshot.val();
+          if (!doesSnapshotHaveData) {
+            notifRef.push({
+              notiftype: "INVITE_TO_CLUB",
+              senderid: senderid,
+            });
+          }
+        });
     } else {
       alert("You don't have a club to invite to!");
     }
