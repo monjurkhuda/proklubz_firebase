@@ -64,23 +64,32 @@ function SearchPlayers() {
   function searchByUsername(e) {
     e.preventDefault();
 
-    axios
-      .get("http://localhost:5000/users/searchuserbyname/" + username)
-      .then((response) => {
-        console.log(response);
-        if (response.data.length > 0) {
-          setUsersObj({
-            user: response.data,
-          });
-        } else {
-          setUsersObj({
-            user: "",
-          });
-        }
+    userRef
+      .orderByChild("username")
+      .equalTo(username)
+      .on("value", function (snapshot) {
+        snapshot.forEach(function (childSnapshot) {
+          userArray.push(childSnapshot.key);
+          console.log(childSnapshot);
+        });
+        setUserFilteredArray(userArray);
       });
-  }
 
-  console.log(usersObj);
+    // axios
+    //   .get("http://localhost:5000/users/searchuserbyname/" + username)
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (response.data.length > 0) {
+    //       setUsersObj({
+    //         user: response.data,
+    //       });
+    //     } else {
+    //       setUsersObj({
+    //         user: "",
+    //       });
+    //     }
+    //   });
+  }
 
   function systemSwitcher(e) {
     switch (e) {
