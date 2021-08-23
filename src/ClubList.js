@@ -16,6 +16,7 @@ function ClubList(props) {
   const senderid = props.senderid;
   const clubid = props.clubid;
   const db = firebaseApp.database();
+  const allClubsRef = db.ref("/clubs");
   const clubRef = db.ref().child("clubs/" + clubid);
 
   useEffect(() => {
@@ -37,19 +38,32 @@ function ClubList(props) {
   const notifRef = db.ref().child("notifications/" + receiverid);
 
   function requestToJoin() {
-    notifRef
-      .orderByChild("senderid")
+    allClubsRef
+      .orderByChild("managerid")
       .equalTo(senderid)
       .once("value", async function (snapshot) {
         const doesSnapshotHaveData = await snapshot.val();
-        if (!doesSnapshotHaveData) {
-          notifRef.push({
-            notiftype: "REQUEST_TO_JOIN",
-            senderid: senderid,
-          });
+        if (doesSnapshotHaveData) {
+          alert(
+            "You must delete your club or hand over manager rights to a club member before you can join another club."
+          );
+          return;
+        } else {
+          notifRef
+            .orderByChild("senderid")
+            .equalTo(senderid)
+            .once("value", async function (snapshot) {
+              const doesSnapshotHaveData = await snapshot.val();
+              if (!doesSnapshotHaveData) {
+                notifRef.push({
+                  notiftype: "REQUEST_TO_JOIN",
+                  senderid: senderid,
+                });
+              }
+            });
+          setDisabledJoinButton(true);
         }
       });
-    setDisabledJoinButton(true);
   }
 
   function hideRedditMessage() {
