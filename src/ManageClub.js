@@ -26,7 +26,7 @@ function ManageClub() {
     userRef.once("value", (snapshot) => {
       setClubid(snapshot.val().clubid);
     });
-    const clubRef = db.ref().child("clubs/" + clubid);
+    let clubRef = db.ref().child("clubs/" + clubid);
     clubRef.once("value", (snapshot) => {
       setClubname(snapshot.val().clubname);
       setSystem(snapshot.val().system);
@@ -38,9 +38,11 @@ function ManageClub() {
       setWantcb(snapshot.val().wantcb);
       setLoading(false);
     });
-  }, [clubid]);
+  }, [clubid, clubname, system, timezone, playstyle]);
 
-  const clubRef = db.ref().child("clubs/" + clubid);
+  console.log(clubid);
+
+  let clubRef = db.ref().child("clubs/" + clubid);
   const lineupRef = db.ref().child("lineups/" + clubid);
 
   console.log(clubRef);

@@ -174,6 +174,20 @@ function NotificationList(props) {
         }
       });
 
+    myRef.update({
+      clubid: senderClubid,
+    });
+
+    const senderLineupRef = db
+      .ref()
+      .child("lineups/" + senderClubid + "/" + myid);
+    senderLineupRef.set(myid);
+
+    specificNotifRef.set({});
+
+    //Refreshing page to show cleared notifications
+    window.location.reload();
+
     // console.log("accept club");
     //Check if user is manager
     // axios
