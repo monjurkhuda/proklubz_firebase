@@ -35,7 +35,7 @@ const App = () => {
           <PrivateRoute exact path="/createclub" component={CreateClub} />
           <PrivateRoute exact path="/manageclub" component={ManageClub} />
           <PrivateRoute exact path="/notifications" component={Notifications} />
-          <Route exact path="/users/:firebaseid">
+          <Route exact path="/users/:userid">
             <UserProfile />
           </Route>
           <Route exact path="/clubs/:managerfirebaseid">
