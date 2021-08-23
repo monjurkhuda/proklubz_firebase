@@ -24,6 +24,8 @@ function NotificationList(props) {
   const myRef = db.ref().child("users/" + myid);
   const clubRef = db.ref("/clubs");
 
+  console.log(myid, props);
+
   // const notification = {
   //   notificationFromFirebaseId: fromFirebaseId,
   //   notificationType: notificationType,
@@ -31,10 +33,13 @@ function NotificationList(props) {
 
   //Getting name of sender and clubname
   useEffect(() => {
-    specificNotifRef.once("value", (snapshot) => {
+    specificNotifRef.once("value", function (snapshot) {
+      console.log(snapshot.val());
       setSenderid(snapshot.val().senderid);
       setNotifType(snapshot.val().notiftype);
     });
+
+    console.log(senderid);
 
     const senderRef = db.ref().child("users/" + senderid);
     senderRef.once("value", (senderSnapshot) => {
@@ -43,17 +48,24 @@ function NotificationList(props) {
     });
 
     console.log("senderClubid", senderClubid);
+    console.log("senderClubname", senderClubname);
 
-    const senderClubRef = db.ref().child("clubs/" + senderClubid);
-    senderClubRef.once("value", (clubSnapshot) => {
-      clubSnapshot.forEach((childSnapshot) => {
-        setSenderClubname(childSnapshot.val().clubname);
+    //////////////////NOT GETTING SENDER CLUB ID
+
+    if (senderClubid && senderUsername) {
+      const senderClubRef = db.ref().child("clubs/" + senderClubid);
+      senderClubRef.once("value", async function (clubSnapshot) {
+        console.log(clubSnapshot.val());
+        setSenderClubname(clubSnapshot.val().clubname);
       });
-    });
 
-    myRef.once("value", (senderSnapshot) => {
-      setMyClubid(senderSnapshot.val().clubid);
-    });
+      console.log("senderClubid", senderClubid);
+      console.log("senderClubname", senderClubname);
+
+      myRef.once("value", (senderSnapshot) => {
+        setMyClubid(senderSnapshot.val().clubid);
+      });
+    }
     // axios
     //   .get("http://localhost:5000/users/firebaseid/" + fromFirebaseId)
     //   .then((res) => {
@@ -64,7 +76,7 @@ function NotificationList(props) {
     //       setUsername("");
     //     }
     //   });
-  }, [senderUsername, senderClubname]);
+  }, [senderClubid, senderClubname]);
 
   // useEffect(() => {
   //   axios
@@ -250,10 +262,11 @@ function NotificationList(props) {
     return (
       <tr className="notificationtr">
         <td>
+          {"The club "}
           <Link style={{ textDecoration: "none" }} to={`/clubs/${senderid}`}>
             {senderClubname}
           </Link>
-          {" has invited you to join."}
+          {" wants you."}
         </td>
         <td>
           <button className="accept__button" onClick={acceptClub}>
