@@ -10,12 +10,10 @@ import { AiOutlineFileSearch } from "react-icons/ai";
 
 const Navigation = () => {
   //const [notifCount, setNotifCount] = useState(0);
-  const [username, setUsername] = useState("");
 
   const userid = firebaseApp.auth().currentUser.uid;
   const db = firebaseApp.database();
   const notifRef = db.ref().child("notifications/" + userid);
-  console.log(notifRef, notifRef.length);
   let notifCount = 0;
 
   notifRef.on("value", function (snapshot) {
