@@ -70,6 +70,8 @@ function UserProfile() {
     username,
   ]);
 
+  console.log(managerClubname);
+
   // const notification = {
   //   notificationFromFirebaseId: senderFbid,
   //   notificationType: "INVITE_TO_CLUB",
@@ -77,10 +79,18 @@ function UserProfile() {
 
   function invitePlayer() {
     if (managerClubname?.length > 0) {
-      notifRef.push({
-        notiftype: "INVITE_TO_CLUB",
-        senderid: senderid,
-      });
+      notifRef
+        .orderByChild("senderid")
+        .equalTo(senderid)
+        .once("value", async function (snapshot) {
+          const doesSnapshotHaveData = await snapshot.val();
+          if (!doesSnapshotHaveData) {
+            notifRef.push({
+              notiftype: "INVITE_TO_CLUB",
+              senderid: senderid,
+            });
+          }
+        });
     } else {
       alert("You don't have a club to invite to!");
     }
@@ -146,7 +156,7 @@ function UserProfile() {
       </div>
       <div className="userprofile__buttons">
         <button
-          className="userprofile__invite__button"
+          className="userprofile__button"
           onClick={() => invitePlayer()}
           disabled={disabledInviteButton}
         >
