@@ -50,17 +50,12 @@ function NotificationList(props) {
     console.log("senderClubid", senderClubid);
     console.log("senderClubname", senderClubname);
 
-    //////////////////NOT GETTING SENDER CLUB ID
-
     if (senderClubid && senderUsername) {
       const senderClubRef = db.ref().child("clubs/" + senderClubid);
       senderClubRef.once("value", async function (clubSnapshot) {
         console.log(clubSnapshot.val());
         setSenderClubname(clubSnapshot.val().clubname);
       });
-
-      console.log("senderClubid", senderClubid);
-      console.log("senderClubname", senderClubname);
 
       myRef.once("value", (senderSnapshot) => {
         setMyClubid(senderSnapshot.val().clubid);
