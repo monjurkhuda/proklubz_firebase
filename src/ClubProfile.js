@@ -6,7 +6,6 @@ import axios from "axios";
 import { BiShieldQuarter } from "react-icons/bi";
 import { FaUserTie } from "react-icons/fa";
 import "./MyClub.css";
-
 import firebaseApp from "./firebase";
 
 function ClubProfile() {
@@ -14,57 +13,102 @@ function ClubProfile() {
   const [clubname, setClubname] = useState();
   const [timezone, setTimezone] = useState();
   const [playstyle, setPlaystyle] = useState();
+  const [managerid, setManagerid] = useState("");
   const [redditusername, setRedditusername] = useState("");
   const [managerusername, setManagerusername] = useState("");
   const [lineupObj, setLineupObj] = useState({ players: "" });
-  const [disabledInviteButton, setDisabledInviteButton] = useState(false);
+  const [disabledRequestButton, setDisabledRequestButton] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
-  const { managerfirebaseid } = useParams("");
+  const { clubid } = useParams("");
 
-  const senderFbid = firebaseApp.auth().currentUser.uid;
+  const senderid = firebaseApp.auth().currentUser.uid;
+  const db = firebaseApp.database();
+  const allClubsRef = db.ref("/clubs");
+  const clubRef = db.ref().child("clubs/" + clubid);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/clubs/managerfirebaseid/" + managerfirebaseid)
-      .then((myClub) => {
-        if (myClub.data.length > 0) {
-          setClubname(myClub.data[0].clubname);
-          setSystem(myClub.data[0].system);
-          setTimezone(myClub.data[0].timezone);
-          setPlaystyle(myClub.data[0].playstyle);
+    clubRef.once("value", (snapshot) => {
+      setClubname(snapshot.val().clubname);
+      setSystem(snapshot.val().system);
+      setTimezone(snapshot.val().timezone);
+      setPlaystyle(snapshot.val().playstyle);
+      setManagerid(snapshot.val().managerid);
+    });
 
-          const lineupObjExtractor = myClub.data[0].players;
+    const managerRef = db.ref().child("users/" + managerid);
+    managerRef.once("value", (snapshot) => {
+      setManagerusername(snapshot.val().username);
+    });
 
-          if (lineupObjExtractor.length > 0) {
-            setLineupObj({ players: lineupObjExtractor });
-          } else {
-            setLineupObj({ players: "" });
-          }
-        }
-      });
-  }, []);
+    setLoading(false);
+    // axios
+    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + managerfirebaseid)
+    //   .then((myClub) => {
+    //     if (myClub.data.length > 0) {
+    //       setClubname(myClub.data[0].clubname);
+    //       setSystem(myClub.data[0].system);
+    //       setTimezone(myClub.data[0].timezone);
+    //       setPlaystyle(myClub.data[0].playstyle);
+    //       const lineupObjExtractor = myClub.data[0].players;
+    //       if (lineupObjExtractor.length > 0) {
+    //         setLineupObj({ players: lineupObjExtractor });
+    //       } else {
+    //         setLineupObj({ players: "" });
+    //       }
+    //     }
+    //   });
+  }, [managerusername]);
 
-  const notification = {
-    notificationFromFirebaseId: senderFbid,
-    notificationType: "REQUEST_TO_JOIN",
-  };
+  // const notification = {
+  //   notificationFromFirebaseId: senderFbid,
+  //   notificationType: "REQUEST_TO_JOIN",
+  // };
+
+  const notifRef = db.ref().child("notifications/" + managerid);
 
   function requestToJoin() {
-    axios
-      .post(
-        "http://localhost:5000/users/notification/" + managerfirebaseid,
-        notification
-      )
-      .then((res) => console.log(res.data));
-    setDisabledInviteButton(true);
+    allClubsRef
+      .orderByChild("managerid")
+      .equalTo(senderid)
+      .once("value", async function (snapshot) {
+        const doesSnapshotHaveData = await snapshot.val();
+        if (doesSnapshotHaveData) {
+          alert(
+            "You must delete your club or hand over manager rights to a club member before you can join another club."
+          );
+          return;
+        } else {
+          notifRef
+            .orderByChild("senderid")
+            .equalTo(senderid)
+            .once("value", async function (snapshot) {
+              const doesSnapshotHaveData = await snapshot.val();
+              if (!doesSnapshotHaveData) {
+                notifRef.push({
+                  notiftype: "REQUEST_TO_JOIN",
+                  senderid: senderid,
+                });
+              }
+            });
+          setDisabledRequestButton(true);
+        }
+      });
+
+    // axios
+    //   .post(
+    //     "http://localhost:5000/users/notification/" + managerfirebaseid,
+    //     notification
+    //   )
+    //   .then((res) => console.log(res.data));
   }
 
-  axios
-    .get("http://localhost:5000/users/firebaseid/" + managerfirebaseid)
-    .then((loadedUser) => {
-      setRedditusername(loadedUser.data[0].redditusername);
-      setManagerusername(loadedUser.data[0].username);
-    });
+  // axios
+  //   .get("http://localhost:5000/users/firebaseid/" + managerfirebaseid)
+  //   .then((loadedUser) => {
+  //     setRedditusername(loadedUser.data[0].redditusername);
+  //     setManagerusername(loadedUser.data[0].username);
+  //   });
 
   function hideRedditMessage() {
     return redditusername.length === 0 ? true : false;
@@ -103,7 +147,7 @@ function ClubProfile() {
         <button
           className="club__button"
           onClick={() => requestToJoin()}
-          disabled={disabledInviteButton}
+          disabled={disabledRequestButton}
         >
           Request To Join
         </button>

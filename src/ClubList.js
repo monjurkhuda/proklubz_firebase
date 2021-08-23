@@ -59,7 +59,7 @@ function ClubList(props) {
   return (
     <tr>
       <td className="clubnametd">
-        <Link style={{ textDecoration: "none" }} to={`/clubs/${receiverid}`}>
+        <Link style={{ textDecoration: "none" }} to={`/clubs/${clubid}`}>
           {clubname}
         </Link>
       </td>

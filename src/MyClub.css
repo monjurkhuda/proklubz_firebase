@@ -83,15 +83,6 @@
 .club__button {
   margin: auto;
   margin-top: 10px;
-  height: fit-content;
-  width: fit-content;
-  padding: 5px;
-  color: white;
-  font-size: 12px;
-  font-weight: 500;
-  background: #f32c52;
-  border-radius: 5px;
-  border: none;
 }
 
 .playstyle__container {

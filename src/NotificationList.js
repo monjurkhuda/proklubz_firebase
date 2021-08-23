@@ -160,7 +160,7 @@ function NotificationList(props) {
   }
 
   function acceptClub() {
-    // //Check if user is manager
+    //Check if user is manager
     clubRef
       .orderByChild("managerid")
       .equalTo(myid)

@@ -38,7 +38,7 @@ const App = () => {
           <Route exact path="/users/:userid">
             <UserProfile />
           </Route>
-          <Route exact path="/clubs/:managerfirebaseid">
+          <Route exact path="/clubs/:clubid">
             <ClubProfile />
           </Route>
         </div>
