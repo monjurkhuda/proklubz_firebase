@@ -56,11 +56,11 @@ function NotificationList(props) {
         console.log(clubSnapshot.val());
         setSenderClubname(clubSnapshot.val().clubname);
       });
-
-      myRef.once("value", (senderSnapshot) => {
-        setMyClubid(senderSnapshot.val().clubid);
-      });
     }
+
+    myRef.once("value", (senderSnapshot) => {
+      setMyClubid(senderSnapshot.val().clubid);
+    });
     // axios
     //   .get("http://localhost:5000/users/firebaseid/" + fromFirebaseId)
     //   .then((res) => {
@@ -71,7 +71,7 @@ function NotificationList(props) {
     //       setUsername("");
     //     }
     //   });
-  }, [senderClubid, senderClubname]);
+  }, [senderClubid, senderClubname, myClubid, senderid]);
 
   // useEffect(() => {
   //   axios
@@ -88,13 +88,18 @@ function NotificationList(props) {
   //     });
   // }, []);
 
-  function acceptPlayer() {
+  async function acceptPlayer() {
+    console.log(senderid);
     const senderRef = db.ref().child("users/" + senderid);
+    console.log(senderRef);
     senderRef.update({
       clubid: myClubid,
     });
 
+    console.log(myClubid);
+
     const myLineupRef = db.ref().child("lineups/" + myClubid + "/" + senderid);
+    console.log(myLineupRef);
     myLineupRef.set(senderid);
 
     specificNotifRef.set({});

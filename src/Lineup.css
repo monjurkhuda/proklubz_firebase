@@ -7,13 +7,33 @@
 } */
 
 .GK {
-  background-color: rgb(255, 219, 59);
+  background-color: #d13913;
   font-weight: 600;
+  color: white;
 }
 
-.CB {
-  background-color: rgb(255, 82, 82);
+.RB,
+.CB,
+.LB {
+  background-color: #e77e23;
   font-weight: 600;
+  color: white;
+}
+
+.CDM,
+.CM,
+.CAM {
+  background-color: #4caf50;
+  font-weight: 600;
+  color: white;
+}
+
+.RW,
+.ST,
+.LW {
+  background-color: #669eff;
+  font-weight: 600;
+  color: white;
 }
 
 .usernametd {

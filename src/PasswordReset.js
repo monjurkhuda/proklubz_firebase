@@ -23,7 +23,7 @@ function PasswordReset() {
     <div className="signin__container">
       <div>
         <div className="prodot__text">
-          <p>CLUBS</p>
+          <p>CLUB</p>
           <p className="dot">.</p>
           <p>SCOUT</p>
         </div>
