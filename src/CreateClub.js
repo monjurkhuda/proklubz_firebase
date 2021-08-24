@@ -30,8 +30,15 @@ function CreateClub() {
         managerid: managerid,
         wantany: "yes",
         wantgk: "no",
-        wantcb: "no",
         wantrb: "no",
+        wantcb: "no",
+        wantlb: "no",
+        wantcdm: "no",
+        wantcm: "no",
+        wantcam: "no",
+        wantrw: "no",
+        wantst: "no",
+        wantlw: "no",
       })
       .getKey();
 
@@ -59,7 +66,7 @@ function CreateClub() {
             </option>
             <option value="xboxone">Xbox One</option>
             <option value="ps5">PS5</option>
-            <option value="xbox">Xbox (4th Gen)</option>
+            <option value="xboxx">Xbox X</option>
             <option value="pc">PC</option>
           </select>
 
@@ -77,12 +84,14 @@ function CreateClub() {
         <input
           className="createclub__select"
           placeholder="Club Name"
+          maxLength="20"
           onChange={(e) => setClubname(e.target.value)}
         ></input>
 
         <input
           className="createclub__select"
           placeholder="Playing Style"
+          maxLength="90"
           onChange={(e) => setPlaystyle(e.target.value)}
         ></input>
 

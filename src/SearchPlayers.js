@@ -135,6 +135,13 @@ function SearchPlayers() {
             </option>
             <option value="RB">RB</option>
             <option value="CB">CB</option>
+            <option value="LB">LB</option>
+            <option value="CDM">CDM</option>
+            <option value="CM">CM</option>
+            <option value="CAM">CAM</option>
+            <option value="RW">RW</option>
+            <option value="ST">ST</option>
+            <option value="LW">LW</option>
           </select>
 
           <select

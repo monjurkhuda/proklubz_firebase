@@ -47,8 +47,8 @@ function Profile() {
         return <div className="profile__system__ps4">PS5</div>;
       case "xboxone":
         return <div className="profile__system__xboxone">XBOX ONE</div>;
-      case "xbox":
-        return <div className="profile__system__xboxone">XBOX SERIES X</div>;
+      case "xboxx":
+        return <div className="profile__system__xboxone">XBOX X</div>;
       default:
         break;
     }

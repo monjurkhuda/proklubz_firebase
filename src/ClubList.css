@@ -21,11 +21,12 @@ td {
   white-space: nowrap;
   background-color: rgb(53, 167, 59);
   color: white;
-  font-weight: 600;
+  font-size: smaller;
 }
 
 .clubnametd {
   width: 100%;
+  font-size: smaller;
 }
 
 .table__button {

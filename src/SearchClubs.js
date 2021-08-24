@@ -111,6 +111,13 @@ function SearchClubs() {
             <option value="wantgk">GK</option>
             <option value="wantrb">RB</option>
             <option value="wantcb">CB</option>
+            <option value="wantlb">LB</option>
+            <option value="wantcdm">CDM</option>
+            <option value="wantcm">CM</option>
+            <option value="wantcam">CAM</option>
+            <option value="wantrw">RW</option>
+            <option value="wantst">ST</option>
+            <option value="wantlw">LW</option>
           </select>
           <button className="search__select" onClick={searchHandler}>
             🔍

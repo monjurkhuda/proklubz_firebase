@@ -49,7 +49,7 @@ function CreateProfile() {
           </option>
           <option value="xboxone">Xbox One</option>
           <option value="ps5">PS5</option>
-          <option value="xboxseriesx">Xbox Series X</option>
+          <option value="xboxx">Xbox X</option>
           <option value="pc">PC</option>
         </select>
 
@@ -86,8 +86,15 @@ function CreateProfile() {
           <option defaultValue value="GK">
             GK
           </option>
+          <option value="RB">RB</option>
           <option value="CB">CB</option>
+          <option value="LB">LB</option>
+          <option value="CDM">CDM</option>
+          <option value="CM">CM</option>
           <option value="CAM">CAM</option>
+          <option value="RW">RW</option>
+          <option value="ST">ST</option>
+          <option value="LW">LW</option>
         </select>
 
         <select

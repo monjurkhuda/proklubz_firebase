@@ -15,6 +15,13 @@ function ManageClub() {
   const [wantgk, setWantgk] = useState("");
   const [wantrb, setWantrb] = useState("");
   const [wantcb, setWantcb] = useState("");
+  const [wantlb, setWantlb] = useState("");
+  const [wantcdm, setWantcdm] = useState("");
+  const [wantcm, setWantcm] = useState("");
+  const [wantcam, setWantcam] = useState("");
+  const [wantrw, setWantrw] = useState("");
+  const [wantst, setWantst] = useState("");
+  const [wantlw, setWantlw] = useState("");
   const [isLoading, setLoading] = useState(true);
 
   const userid = firebaseApp.auth().currentUser.uid;
@@ -26,19 +33,28 @@ function ManageClub() {
     userRef.once("value", (snapshot) => {
       setClubid(snapshot.val().clubid);
     });
-    let clubRef = db.ref().child("clubs/" + clubid);
-    clubRef.once("value", (snapshot) => {
-      setClubname(snapshot.val().clubname);
-      setSystem(snapshot.val().system);
-      setTimezone(snapshot.val().timezone);
-      setPlaystyle(snapshot.val().playstyle);
-      setWantany(snapshot.val().wantany);
-      setWantgk(snapshot.val().wantgk);
-      setWantrb(snapshot.val().wantrb);
-      setWantcb(snapshot.val().wantcb);
-      setLoading(false);
-    });
-  }, [clubid, clubname, system, timezone, playstyle]);
+    if (clubid) {
+      let clubRef = db.ref().child("clubs/" + clubid);
+      clubRef.once("value", (snapshot) => {
+        setClubname(snapshot.val().clubname);
+        setSystem(snapshot.val().system);
+        setTimezone(snapshot.val().timezone);
+        setPlaystyle(snapshot.val().playstyle);
+        setWantany(snapshot.val().wantany);
+        setWantgk(snapshot.val().wantgk);
+        setWantrb(snapshot.val().wantrb);
+        setWantcb(snapshot.val().wantcb);
+        setWantlb(snapshot.val().wantlb);
+        setWantcdm(snapshot.val().wantcdm);
+        setWantcm(snapshot.val().wantcm);
+        setWantcam(snapshot.val().wantcam);
+        setWantrw(snapshot.val().wantrw);
+        setWantst(snapshot.val().wantst);
+        setWantlw(snapshot.val().wantlw);
+        setLoading(false);
+      });
+    }
+  }, [clubid]);
 
   console.log(clubid);
 
@@ -55,8 +71,15 @@ function ManageClub() {
     playstyle,
     wantany,
     wantgk,
+    wantrb,
     wantcb,
-    wantrb
+    wantlb,
+    wantcdm,
+    wantcm,
+    wantcam,
+    wantrw,
+    wantst,
+    wantlw
   );
 
   // useEffect(() => {
@@ -114,11 +137,84 @@ function ManageClub() {
         }
         break;
 
+      case "lb":
+        if (checked === true) {
+          setWantlb("yes");
+        } else {
+          setWantlb("no");
+        }
+        break;
+
+      case "cdm":
+        if (checked === true) {
+          setWantcdm("yes");
+        } else {
+          setWantcdm("no");
+        }
+        break;
+
+      case "cm":
+        if (checked === true) {
+          setWantcm("yes");
+        } else {
+          setWantcm("no");
+        }
+        break;
+
+      case "cam":
+        if (checked === true) {
+          setWantcam("yes");
+        } else {
+          setWantcam("no");
+        }
+        break;
+
+      case "rw":
+        if (checked === true) {
+          setWantrw("yes");
+        } else {
+          setWantrw("no");
+        }
+        break;
+
+      case "st":
+        if (checked === true) {
+          setWantst("yes");
+        } else {
+          setWantst("no");
+        }
+        break;
+
+      case "lw":
+        if (checked === true) {
+          setWantlw("yes");
+        } else {
+          setWantlw("no");
+        }
+        break;
+
       default:
         break;
     }
 
-    console.log(wantany, wantgk, wantcb, wantrb);
+    console.log(
+      clubid,
+      clubname,
+      system,
+      timezone,
+      playstyle,
+      wantany,
+      wantgk,
+      wantrb,
+      wantcb,
+      wantlb,
+      wantcdm,
+      wantcm,
+      wantcam,
+      wantrw,
+      wantst,
+      wantlw
+    );
   }
 
   function deleteClub() {
@@ -151,7 +247,14 @@ function ManageClub() {
       wantany,
       wantgk,
       wantcb,
-      wantrb
+      wantrb,
+      wantlb,
+      wantcdm,
+      wantcm,
+      wantcam,
+      wantrw,
+      wantst,
+      wantlw
     );
 
     clubRef.update({
@@ -163,6 +266,13 @@ function ManageClub() {
       wantgk: wantgk,
       wantcb: wantcb,
       wantrb: wantrb,
+      wantlb: wantlb,
+      wantcdm: wantcdm,
+      wantcm: wantcm,
+      wantcam: wantcam,
+      wantrw: wantrw,
+      wantst: wantst,
+      wantlw: wantlw,
     });
 
     history.push("/myclub");
@@ -192,7 +302,7 @@ function ManageClub() {
               <option value="ps4">PS4</option>
               <option value="xboxone">Xbox One</option>
               <option value="ps5">PS5</option>
-              <option value="xbox">Xbox (4th Gen)</option>
+              <option value="xboxx">Xbox X</option>
               <option value="pc">PC</option>
             </select>
 
@@ -223,8 +333,8 @@ function ManageClub() {
           ></textarea>
         </div>
 
-        <p>Open Positions:</p>
         <div className="open__positions">
+          <div>Open Positions:</div>
           <div className="open__positions__checkbox">
             <input
               className="open__positions__checkbox"
@@ -267,6 +377,83 @@ function ManageClub() {
               onChange={(e) => posAvailabilitySetter(e)}
             ></input>
             <label for="cb">CB</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="lb"
+              defaultChecked={wantlb === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="lb">LB</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="cdm"
+              defaultChecked={wantcdm === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="cdm">CDM</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="cm"
+              defaultChecked={wantcm === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="cm">CM</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="cam"
+              defaultChecked={wantcam === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="cam">CAM</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="rw"
+              defaultChecked={wantrw === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="rw">RW</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="st"
+              defaultChecked={wantst === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="st">ST</label>
+          </div>
+
+          <div className="open__positions__checkbox">
+            <input
+              className="open__positions__checkbox"
+              type="checkbox"
+              name="lw"
+              defaultChecked={wantlw === "yes" ? true : false}
+              onChange={(e) => posAvailabilitySetter(e)}
+            ></input>
+            <label for="lw">LW</label>
           </div>
         </div>
 

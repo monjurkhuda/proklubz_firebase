@@ -3,10 +3,12 @@ import firebaseApp from "./firebase";
 import { Link } from "react-router-dom";
 import "./ClubList.css";
 import { SiReddit } from "react-icons/si";
+import { FaUserTie } from "react-icons/fa";
 
 function ClubList(props) {
   const [disabledJoinButton, setDisabledJoinButton] = useState(false);
-  const [redditusername, setRedditusername] = useState("");
+  const [redditUsername, setRedditUsername] = useState("");
+  const [managerUsername, setManagerUsername] = useState("");
   const [managerid, setManagerid] = useState("");
   const [system, setSystem] = useState("");
   const [clubname, setClubname] = useState("");
@@ -30,9 +32,18 @@ function ClubList(props) {
 
     const managerRef = db.ref().child("users/" + managerid);
     managerRef.once("value", (snapshot) => {
-      setRedditusername(snapshot.val().redditusername);
+      setManagerUsername(snapshot.val().username);
+      setRedditUsername(snapshot.val().redditusername);
     });
-  }, [clubname, system, timezone, playstyle, managerid, redditusername]);
+  }, [
+    clubname,
+    system,
+    timezone,
+    playstyle,
+    managerid,
+    managerUsername,
+    redditUsername,
+  ]);
 
   const receiverid = managerid;
   const notifRef = db.ref().child("notifications/" + receiverid);
@@ -62,12 +73,13 @@ function ClubList(props) {
               }
             });
           setDisabledJoinButton(true);
+          alert("Request to join club was sent!");
         }
       });
   }
 
   function hideRedditMessage() {
-    return redditusername?.length === 0 ? true : false;
+    return redditUsername?.length === 0 ? true : false;
   }
 
   return (
@@ -77,19 +89,21 @@ function ClubList(props) {
           {clubname}
         </Link>
       </td>
-      <td className="timezonetd">{timezone}</td>
+      <td className="timezonetd">
+        <FaUserTie /> {managerUsername}
+      </td>
       <td>
         <button
           className="table__button"
           onClick={() => requestToJoin()}
           disabled={disabledJoinButton}
         >
-          Join Request
+          Join
         </button>
       </td>
       <td>
         <a
-          href={`https://www.reddit.com/message/compose/?to=${redditusername}`}
+          href={`https://www.reddit.com/message/compose/?to=${redditUsername}`}
         >
           <button
             className="table__reddit__button"
