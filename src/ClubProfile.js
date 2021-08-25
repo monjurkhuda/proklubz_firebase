@@ -27,6 +27,8 @@ function ClubProfile() {
   const allClubsRef = db.ref("/clubs");
   const clubRef = db.ref().child("clubs/" + clubid);
 
+  let lineupArray = [];
+
   useEffect(() => {
     clubRef.once("value", (snapshot) => {
       setClubname(snapshot.val().clubname);
@@ -58,12 +60,31 @@ function ClubProfile() {
     //       }
     //     }
     //   });
-  }, [managerusername]);
+
+    console.log(
+      managerusername,
+      clubname,
+      system,
+      timezone,
+      playstyle,
+      managerid
+    );
+  }, [managerusername, clubname, system, timezone, playstyle, managerid]);
 
   // const notification = {
   //   notificationFromFirebaseId: senderFbid,
   //   notificationType: "REQUEST_TO_JOIN",
   // };
+
+  const lineupRef = db.ref().child("lineups/" + clubid);
+
+  lineupRef.on("value", async function (snapshot) {
+    snapshot.forEach(function (childSnapshot) {
+      lineupArray.push(childSnapshot.key);
+      console.log(childSnapshot);
+    });
+    console.log(lineupArray);
+  });
 
   const notifRef = db.ref().child("notifications/" + managerid);
 
@@ -168,9 +189,14 @@ function ClubProfile() {
       <div className="lineup__container">
         <table>
           <tbody>
-            {Array.from(lineupObj.players).map((playerlist) => {
+            {lineupArray.map((userid) => {
               return (
-                <Lineup playerFbid={playerlist.playerFbid} isManager={false} />
+                <Lineup
+                  userid={userid}
+                  isManager={false}
+                  managerid={managerid}
+                  clubid={clubid}
+                />
               );
             })}
           </tbody>

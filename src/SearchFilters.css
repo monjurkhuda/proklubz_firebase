@@ -1,3 +1,22 @@
+.nav__container {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  height: 110px;
+}
+
+.legend {
+  display: flex;
+  padding-left: 10px;
+  padding-bottom: 5px;
+  justify-content: center;
+}
+
+.search__container {
+  display: block;
+  height: 2000px;
+}
+
 .search__filters__container {
   display: flex;
   flex-direction: column;

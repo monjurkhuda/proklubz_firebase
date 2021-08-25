@@ -1,11 +1,19 @@
+.nav__container {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  height: 110px;
+}
+
 .club__container {
-  display: flex;
-  flex-direction: column;
+  display: block;
+  height: 2000px;
 }
 
 .noclub__container {
   display: flex;
   justify-content: space-around;
+  padding-bottom: 60px;
 }
 
 .clubname {

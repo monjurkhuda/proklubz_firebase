@@ -87,51 +87,56 @@ function MyClub() {
   function myClubRenderer() {
     if (clubid) {
       return (
-        <div className="club__container">
-          <div className="club__inner__container">
-            <div className="clubname">
-              <BiShieldQuarter size="1.2em" />
-              {clubname}
+        <div>
+          <div className="club__container">
+            <div className="club__inner__container">
+              <div className="clubname">
+                <BiShieldQuarter size="1.2em" />
+                {clubname}
+              </div>
+              <div className="club__system__timezone">
+                <div className="club__system">{systemStyler(system)}</div>
+                <div className="club__timezone">{timezone}</div>
+              </div>
+              <button
+                hidden={!isManager}
+                className="club__button"
+                onClick={manageClub}
+              >
+                Manage Club
+              </button>
+              <button
+                hidden={isManager}
+                className="club__button"
+                onClick={leaveClub}
+              >
+                Leave Club
+              </button>
             </div>
-            <div className="club__system__timezone">
-              <div className="club__system">{systemStyler(system)}</div>
-              <div className="club__timezone">{timezone}</div>
+            <div className="playstyle__container">
+              <div className="playstyle__title">Playstyle:</div>
+              <div className="playstyle__body">{playstyle}</div>
             </div>
-            <button
-              hidden={!isManager}
-              className="club__button"
-              onClick={manageClub}
-            >
-              Manage Club
-            </button>
-            <button
-              hidden={isManager}
-              className="club__button"
-              onClick={leaveClub}
-            >
-              Leave Club
-            </button>
-          </div>
-          <div className="playstyle__container">
-            <div className="playstyle__title">Playstyle:</div>
-            <div className="playstyle__body">{playstyle}</div>
-          </div>
 
-          <div className="lineup__container">
-            <table>
-              <tbody>
-                {lineupArray.map((userid) => {
-                  return (
-                    <Lineup
-                      userid={userid}
-                      isManager={isManager}
-                      managerid={managerid}
-                      clubid={clubid}
-                    />
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="lineup__container">
+              <table>
+                <tbody>
+                  {lineupArray.map((userid) => {
+                    return (
+                      <Lineup
+                        userid={userid}
+                        isManager={isManager}
+                        managerid={managerid}
+                        clubid={clubid}
+                      />
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="nav__container">
+            <Navigation />
           </div>
         </div>
       );
@@ -144,17 +149,13 @@ function MyClub() {
           <Link to="/searchclubs">
             <button className="club__button">Join A Club</button>
           </Link>
+          <Navigation />
         </div>
       );
     }
   }
 
-  return (
-    <div>
-      <div>{myClubRenderer()}</div>
-      <Navigation />
-    </div>
-  );
+  return <div>{myClubRenderer()}</div>;
 }
 
 export default MyClub;

@@ -1,9 +1,3 @@
-.nav__container {
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-}
-
 .nav__search {
   display: flex;
   flex-direction: row;
