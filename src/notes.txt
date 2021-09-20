@@ -1,3 +1,3 @@
-FLEX - sort and color code by position in lineup
+FLEX - sort by position in lineup
 FLEX - search by username and clubname with incomplete name
 FLEX - non-jittery rendering

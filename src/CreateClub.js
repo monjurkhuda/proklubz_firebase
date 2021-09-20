@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import firebaseApp from "./firebase.js";
@@ -10,12 +10,19 @@ function CreateClub() {
   const [clubname, setClubname] = useState("");
   const [timezone, setTimezone] = useState("EST");
   const [playstyle, setPlaystyle] = useState("");
+  const [primaryposition, setPrimaryposition] = useState();
 
   const history = useHistory();
   const managerid = firebaseApp.auth().currentUser.uid;
   const db = firebaseApp.database();
   const clubRef = db.ref("clubs/");
   const userRef = db.ref().child("users/" + managerid);
+
+  useEffect(() => {
+    userRef.once("value", (snapshot) => {
+      setPrimaryposition(snapshot.val().primaryposition);
+    });
+  }, [primaryposition]);
 
   function createClubHandler(e) {
     e.preventDefault();
@@ -46,7 +53,9 @@ function CreateClub() {
       clubid: clubid,
     });
 
-    const lineupRef = db.ref().child("lineups/" + clubid + "/" + managerid);
+    const lineupRef = db
+      .ref()
+      .child("lineups/" + clubid + "/" + primaryposition + "/" + managerid);
 
     lineupRef.set(managerid);
 
