@@ -3,7 +3,6 @@ import Profile from "./Profile";
 import Navigation from "./Navigation";
 import firebaseApp from "./firebase";
 import "./Dashboard.css";
-import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (

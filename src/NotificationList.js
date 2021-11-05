@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import firebaseApp from "./firebase";
-import { useHistory, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Notifications.css";
 
 function NotificationList(props) {
@@ -14,9 +13,6 @@ function NotificationList(props) {
 
   const myid = firebaseApp.auth().currentUser.uid;
   const notifid = props.notifid;
-  //const notificationType = props.type;
-  // const fromFirebaseId = props.fromFirebaseId;
-  const history = useHistory();
   const db = firebaseApp.database();
   const specificNotifRef = db
     .ref()
@@ -25,11 +21,6 @@ function NotificationList(props) {
   const clubRef = db.ref("/clubs");
 
   console.log(myid, props);
-
-  // const notification = {
-  //   notificationFromFirebaseId: fromFirebaseId,
-  //   notificationType: notificationType,
-  // };
 
   //Getting name of sender and clubname
   useEffect(() => {
@@ -61,32 +52,7 @@ function NotificationList(props) {
     myRef.once("value", (senderSnapshot) => {
       setMyClubid(senderSnapshot.val().clubid);
     });
-    // axios
-    //   .get("http://localhost:5000/users/firebaseid/" + fromFirebaseId)
-    //   .then((res) => {
-    //     if (res.data.length > 0) {
-    //       const nameOfUser = res.data[0].username;
-    //       setUsername(nameOfUser);
-    //     } else {
-    //       setUsername("");
-    //     }
-    //   });
   }, [senderClubid, senderClubname, myClubid, senderid]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:5000/clubs/managerfirebaseid/" + fromFirebaseId)
-  //     .then((res) => {
-  //       if (res.data.length > 0) {
-  //         const nameOfClub = res.data[0].clubname;
-  //         const idOfClub = res.data[0]._id;
-  //         setClubName(nameOfClub);
-  //         setClubid(idOfClub);
-  //       } else {
-  //         setClubName("");
-  //       }
-  //     });
-  // }, []);
 
   async function acceptPlayer() {
     console.log(senderid);
@@ -106,45 +72,6 @@ function NotificationList(props) {
 
     //Refreshing page to show cleared notifications
     window.location.reload();
-
-    // axios
-    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + firebaseid)
-    //   .then((res) => {
-    //     const myclubid = res.data[0]._id;
-    //     console.log(myclubid);
-    //     const acceptedPlayerUpdate = {
-    //       myclubid: myclubid,
-    //     };
-    //     console.log(fromFirebaseId);
-    //     axios
-    //       .post(
-    //         "http://localhost:5000/users/changeplayerclubid/" + fromFirebaseId,
-    //         acceptedPlayerUpdate
-    //       )
-    //       .then((res) => {
-    //         console.log(res.data);
-    //       });
-    //     const addPlayerToClub = {
-    //       playerFbid: fromFirebaseId,
-    //     };
-    //     axios
-    //       .post(
-    //         "http://localhost:5000/clubs/addplayer/" + firebaseid,
-    //         addPlayerToClub
-    //       )
-    //       .then((res) => console.log(res.data));
-    //   });
-    // //get rid of the specific notification
-    // axios
-    //   .post(
-    //     "http://localhost:5000/users/clearonenotification/" + firebaseid,
-    //     notification
-    //   )
-    //   .then((res) => {
-    //     //Refreshing page to show cleared notifications
-    //     window.location.reload();
-    //     console.log(res.data);
-    //   });
   }
 
   function rejectPlayer() {
@@ -152,16 +79,6 @@ function NotificationList(props) {
 
     //Refreshing page to show cleared notifications
     window.location.reload();
-    // axios
-    //   .post(
-    //     "http://localhost:5000/users/clearonenotification/" + firebaseid,
-    //     notification
-    //   )
-    //   .then((res) => {
-    //     //Refreshing page to show cleared notifications
-    //     window.location.reload();
-    //     console.log(res.data);
-    //   });
   }
 
   function acceptClub() {
@@ -192,46 +109,6 @@ function NotificationList(props) {
 
     //Refreshing page to show cleared notifications
     window.location.reload();
-
-    // console.log("accept club");
-    //Check if user is manager
-    // axios
-    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + firebaseid)
-    //   .then((res) => {
-    //     if (res.data.length > 0) {
-    //       alert(
-    //         "You must delete your club or hand over manager rights to a club member before you can join another club."
-    //       );
-    //       return;
-    //     } else {
-    //       const clubAcceptanceChanges = {
-    //         clubid: clubid,
-    //       };
-    //       axios
-    //         .post(
-    //           "http://localhost:5000/users/updateclubid/" + firebaseid,
-    //           clubAcceptanceChanges
-    //         )
-    //         .then((res) => console.log(res.data));
-    //       const addPlayerToClub = {
-    //         playerFbid: firebaseid,
-    //       };
-    //       axios
-    //         .post(
-    //           "http://localhost:5000/clubs/addplayer/" + fromFirebaseId,
-    //           addPlayerToClub
-    //         )
-    //         .then((res) => console.log(res.data));
-    //       axios
-    //         .post(
-    //           "http://localhost:5000/users/clearnotifications/" + firebaseid
-    //         )
-    //         .then((res) => {
-    //           history.push("/myclub");
-    //           console.log(res.data);
-    //         });
-    //     }
-    //   });
   }
 
   function rejectClub() {
@@ -239,16 +116,6 @@ function NotificationList(props) {
 
     //Refreshing page to show cleared notifications
     window.location.reload();
-    // axios
-    //   .post(
-    //     "http://localhost:5000/users/clearonenotification/" + firebaseid,
-    //     notification
-    //   )
-    //   .then((res) => {
-    //     //Refreshing page to show cleared notifications
-    //     window.location.reload();
-    //     console.log(res.data);
-    //   });
   }
 
   if (notifType === "REQUEST_TO_JOIN") {

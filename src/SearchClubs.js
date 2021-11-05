@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import ClubList from "./ClubList";
 import Navigation from "./Navigation";
 import firebaseApp from "./firebase";
@@ -53,23 +52,6 @@ function SearchClubs() {
       });
   }
 
-  function systemSwitcher(e) {
-    switch (e) {
-      case "ps4":
-        return "PS4";
-      case "xboxone":
-        return "Xbox One";
-      case "ps5":
-        return "PS5";
-      case "xbox":
-        return "Xbox (4th Gen)";
-      case "pc":
-        return "PC";
-      default:
-        return "N/A";
-    }
-  }
-
   return (
     <div className="search__container">
       <div className="search__filters__container">
@@ -87,15 +69,31 @@ function SearchClubs() {
             <option value="xbox">Xbox (4th Gen)</option>
             <option value="pc">PC</option>
           </select>
+        </div>
 
+        <div>
           <select
             className="search__select"
             onChange={(e) => setTimezone(e.target.value)}
           >
-            <option defaultValue value="EST">
-              EST
+            <option defaultValue value="British Isles">
+              British Isles
             </option>
-            <option value="EUR">EUR</option>
+            <option value="Western Europe">Western Europe</option>
+            <option value="Eastern Europe">Eastern Europe</option>
+            <option value="Northern Europe">Northern Europe</option>
+            <option value="Southern Europe">Southern Europe</option>
+            <option value="Eastern N.America">Eastern N.America</option>
+            <option value="Western N.America">Western N.America</option>
+            <option value="South America">South America</option>
+            <option value="Central America">Central America</option>
+            <option value="Northern Asia">Northern Asia</option>
+            <option value="Southern Asia">Southern Asia</option>
+            <option value="Central Asia">Central Asia</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Australia/New Zealand">Australia/New Zealand</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Middle East">Middle East</option>
           </select>
         </div>
 
@@ -141,15 +139,7 @@ function SearchClubs() {
         <tbody>
           {clubFilteredArray.map((clubid) => {
             return (
-              <ClubList
-                key={clubid}
-                clubid={clubid}
-                //   // system={systemSwitcher(clublist.system)}
-                //   // clubname={clublist.clubname}
-                //   // timezone={clublist.timezone}
-                //   // receiverFbid={clublist.managerfirebaseid}
-                senderid={senderid}
-              />
+              <ClubList key={clubid} clubid={clubid} senderid={senderid} />
             );
           })}
         </tbody>

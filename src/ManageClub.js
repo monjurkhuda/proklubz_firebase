@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import firebaseApp from "./firebase";
@@ -81,22 +80,6 @@ function ManageClub() {
     wantst,
     wantlw
   );
-
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:5000/clubs/managerfirebaseid/" + userid)
-  //     .then((club) => {
-  //       setSystem(club.data[0].system);
-  //       setClubname(club.data[0].clubname);
-  //       setTimezone(club.data[0].timezone);
-  //       setPlaystyle(club.data[0].playstyle);
-  //       setWantany(club.data[0].wantany);
-  //       setWantgk(club.data[0].wantgk);
-  //       setWantrb(club.data[0].wantrb);
-  //       setWantcb(club.data[0].wantcb);
-  //       setLoading(false);
-  //     });
-  // }, []);
 
   function posAvailabilitySetter(e) {
     const position = e.target.name;
@@ -223,15 +206,6 @@ function ManageClub() {
       lineupRef.set({});
       userRef.update({ clubid: "" });
       history.push("/myclub");
-
-      // axios
-      //   .get("http://localhost:5000/users/firebaseid/" + userid)
-      //   .then((res) => {
-      //     console.log(res);
-      //     const clubid = res.data[0].clubid;
-      //     axios.delete("http://localhost:5000/clubs/" + clubid);
-      //     history.push("/myclub");
-      //   });
     }
   }
 
@@ -311,8 +285,24 @@ function ManageClub() {
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
             >
-              <option value="EST">EST</option>
-              <option value="EUR">EUR</option>
+              <option value="British Isles">British Isles</option>
+              <option value="Western Europe">Western Europe</option>
+              <option value="Eastern Europe">Eastern Europe</option>
+              <option value="Northern Europe">Northern Europe</option>
+              <option value="Southern Europe">Southern Europe</option>
+              <option value="Eastern N.America">Eastern N.America</option>
+              <option value="Western N.America">Western N.America</option>
+              <option value="South America">South America</option>
+              <option value="Central America">Central America</option>
+              <option value="Northern Asia">Northern Asia</option>
+              <option value="Southern Asia">Southern Asia</option>
+              <option value="Central Asia">Central Asia</option>
+              <option value="Indonesia">Indonesia</option>
+              <option value="Australia/New Zealand">
+                Australia/New Zealand
+              </option>
+              <option value="South Africa">South Africa</option>
+              <option value="Middle East">Middle East</option>
             </select>
           </div>
 
@@ -468,11 +458,11 @@ function ManageClub() {
             Cancel
           </button>
         </div>
+        <button className="deleteclub__button" onClick={deleteClub}>
+          💀 Delete Club
+        </button>
       </div>
 
-      <button className="deleteclub__button" onClick={deleteClub}>
-        💀 Delete Club
-      </button>
       <Navigation />
     </div>
   );

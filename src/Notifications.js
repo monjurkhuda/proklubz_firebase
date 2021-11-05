@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import firebaseApp from "./firebase";
 import NotificationList from "./NotificationList.js";
@@ -6,7 +5,6 @@ import Navigation from "./Navigation";
 import "./Notifications.css";
 
 function Notifications() {
-  const [notificationObj, setNotificationObj] = useState({ notifications: "" });
   const [notifFilteredArray, setNotifFilteredArray] = useState([]);
 
   const userid = firebaseApp.auth().currentUser.uid;
@@ -21,17 +19,6 @@ function Notifications() {
       });
       setNotifFilteredArray(notifArray);
     });
-
-    // axios
-    //   .get("http://localhost:5000/users/firebaseid/" + firebaseId)
-    //   .then((response) => {
-    //     const notificationObjExtractor = response.data[0].notifications;
-    //     if (notificationObjExtractor.length > 0) {
-    //       setNotificationObj({ notifications: notificationObjExtractor });
-    //     } else {
-    //       setNotificationObj({ notifications: "" });
-    //     }
-    //   });
   }, []);
 
   console.log(notifFilteredArray);

@@ -8,19 +8,21 @@
 .legend {
   display: flex;
   padding-left: 10px;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
   justify-content: center;
 }
 
 .search__container {
   display: block;
   height: 2000px;
+  overflow: auto;
 }
 
 .search__filters__container {
   display: flex;
   flex-direction: column;
-  width: 94%;
+  align-items: center;
+  width: 90%;
   margin: auto;
   margin-bottom: 10px;
 }

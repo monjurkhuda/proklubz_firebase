@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import UserList from "./UserList";
 import Navigation from "./Navigation";
 import firebaseApp from "./firebase";
@@ -11,7 +10,6 @@ function SearchPlayers() {
   const [username, setUsername] = useState("");
   const [primaryposition, setPrimaryposition] = useState("GK");
   const [timezone, setTimezone] = useState("EST");
-  const [usersObj, setUsersObj] = useState({ user: "" });
   const [userFilteredArray, setUserFilteredArray] = useState([]);
 
   const senderid = firebaseApp.auth().currentUser.uid;
@@ -32,34 +30,10 @@ function SearchPlayers() {
             childSnapshot.val().timezone === timezone
           ) {
             userArray.push(childSnapshot.key);
-            console.log(childSnapshot.val().username);
           }
         });
         setUserFilteredArray(userArray);
       });
-
-    // console.log(usersObj.user.length);
-    // axios
-    //   .get(
-    //     "http://localhost:5000/users/searchuser/" +
-    //       system +
-    //       "/" +
-    //       primaryposition +
-    //       "/" +
-    //       timezone
-    //   )
-    //   .then((response) => {
-    //     console.log(response);
-    //     if (response.data.length > 0) {
-    //       setUsersObj({
-    //         user: response.data,
-    //       });
-    //     } else {
-    //       setUsersObj({
-    //         user: "",
-    //       });
-    //     }
-    //   });
   }
 
   function searchByUsername(e) {
@@ -71,42 +45,9 @@ function SearchPlayers() {
       .on("value", function (snapshot) {
         snapshot.forEach(function (childSnapshot) {
           userArray.push(childSnapshot.key);
-          console.log(childSnapshot);
         });
         setUserFilteredArray(userArray);
       });
-
-    // axios
-    //   .get("http://localhost:5000/users/searchuserbyname/" + username)
-    //   .then((response) => {
-    //     console.log(response);
-    //     if (response.data.length > 0) {
-    //       setUsersObj({
-    //         user: response.data,
-    //       });
-    //     } else {
-    //       setUsersObj({
-    //         user: "",
-    //       });
-    //     }
-    //   });
-  }
-
-  function systemSwitcher(e) {
-    switch (e) {
-      case "ps4":
-        return "PS4";
-      case "xboxone":
-        return "Xbox One";
-      case "ps5":
-        return "PS5";
-      case "xbox":
-        return "Xbox (4th Gen)";
-      case "pc":
-        return "PC";
-      default:
-        return "N/A";
-    }
   }
 
   return (
@@ -145,15 +86,33 @@ function SearchPlayers() {
               <option value="ST">ST</option>
               <option value="LW">LW</option>
             </select>
+          </div>
 
+          <div>
             <select
               className="search__select"
               onChange={(e) => setTimezone(e.target.value)}
             >
-              <option defaultValue value="EST">
-                EST
+              <option defaultValue value="British Isles">
+                British Isles
               </option>
-              <option value="EUR">EUR</option>
+              <option value="Western Europe">Western Europe</option>
+              <option value="Eastern Europe">Eastern Europe</option>
+              <option value="Northern Europe">Northern Europe</option>
+              <option value="Southern Europe">Southern Europe</option>
+              <option value="Eastern N.America">Eastern N.America</option>
+              <option value="Western N.America">Western N.America</option>
+              <option value="South America">South America</option>
+              <option value="Central America">Central America</option>
+              <option value="Northern Asia">Northern Asia</option>
+              <option value="Southern Asia">Southern Asia</option>
+              <option value="Central Asia">Central Asia</option>
+              <option value="Indonesia">Indonesia</option>
+              <option value="Australia/New Zealand">
+                Australia/New Zealand
+              </option>
+              <option value="South Africa">South Africa</option>
+              <option value="Middle East">Middle East</option>
             </select>
 
             <button className="search__select" onClick={searchHandler}>
@@ -174,27 +133,15 @@ function SearchPlayers() {
           </div>
         </div>
         <div className="legend">
-          <BiShieldQuarter size="1.6em" color="darkgreen" />
-          {" = On Contract"}
+          <BiShieldQuarter size="1.5em" color="black" />
+          <div>{" = under contract"}</div>
         </div>
 
         <table>
           <tbody>
             {userFilteredArray.map((userid) => {
               return (
-                <UserList
-                  key={userid}
-                  userid={userid}
-                  // system={systemSwitcher(userlist.system)}
-                  // username={userlist.username}
-                  // redditusername={userlist.redditusername}
-                  // clubid={userlist.clubid}
-                  // primaryposition={userlist.primaryposition}
-                  // primarypositionrating={userlist.primarypositionrating}
-                  // timezone={userlist.timezone}
-                  // receiverFbid={userlist.firebaseid}
-                  senderid={senderid}
-                />
+                <UserList key={userid} userid={userid} senderid={senderid} />
               );
             })}
           </tbody>

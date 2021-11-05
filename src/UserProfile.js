@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Navigation from "./Navigation";
-import axios from "axios";
 import firebaseApp from "./firebase";
 import { SiReddit } from "react-icons/si";
-import { FiEdit2 } from "react-icons/fi";
 import { ImUser } from "react-icons/im";
 import "./Profile.css";
 
@@ -48,18 +46,6 @@ function UserProfile() {
           setManagerClubname(managerClub);
         });
       });
-    // axios
-    //   .get("http://localhost:5000/users/firebaseid/" + firebaseid)
-    //   .then((loadedUser) => {
-    //     console.log(loadedUser);
-    //     setUsername(loadedUser.data[0].username);
-    //     setSystem(loadedUser.data[0].system);
-    //     setPrimaryposition(loadedUser.data[0].primaryposition);
-    //     setPrimarypositionrating(loadedUser.data[0].primarypositionrating);
-    //     setTimezone(loadedUser.data[0].timezone);
-    //     setPlaystyle(loadedUser.data[0].playstyle);
-    //     setRedditusername(loadedUser.data[0].redditusername);
-    //   });
   }, [
     playstyle,
     primaryposition,
@@ -71,11 +57,6 @@ function UserProfile() {
   ]);
 
   console.log(managerClubname);
-
-  // const notification = {
-  //   notificationFromFirebaseId: senderFbid,
-  //   notificationType: "INVITE_TO_CLUB",
-  // };
 
   function invitePlayer() {
     if (managerClubname?.length > 0) {
@@ -95,25 +76,6 @@ function UserProfile() {
       alert("You don't have a club to invite to!");
     }
     setDisabledInviteButton(true);
-
-    // axios
-    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + senderFbid)
-    //   .then((res) => {
-    //     console.log(res);
-    //     console.log(res.data.length);
-    //     if (res.data.length > 0) {
-    //       axios
-    //         .post(
-    //           "http://localhost:5000/users/notification/" + firebaseid,
-    //           notification
-    //         )
-    //         .then((res) => console.log(res.data));
-
-    //       setDisabledInviteButton(true);
-    //     } else {
-    //       alert("You don't have a club to invite to!");
-    //     }
-    //   });
   }
 
   console.log(redditusername.length);

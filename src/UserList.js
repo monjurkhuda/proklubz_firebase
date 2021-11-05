@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import firebaseApp from "./firebase";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { BiShieldQuarter } from "react-icons/bi";
 import { SiReddit } from "react-icons/si";
@@ -15,14 +14,11 @@ function UserList(props) {
   const [system, setSystem] = useState();
   const [timezone, setTimezone] = useState();
   const [username, setUsername] = useState();
-  const [clubname, setClubname] = useState();
   const [managerClubname, setManagerClubname] = useState();
   const [disabledInviteButton, setDisabledInviteButton] = useState(false);
-  const [inviteSentAlready, setInviteSentAlready] = useState(true);
 
   const userid = props.userid;
   const senderid = props.senderid;
-  let prevSenderid;
   const db = firebaseApp.database();
   const userRef = db.ref().child("users/" + userid);
   const managerClubRef = db.ref("clubs/");
@@ -77,17 +73,6 @@ function UserList(props) {
 
   const notifRef = db.ref().child("notifications/" + userid);
 
-  // axios.get("http://localhost:5000/clubs/" + clubid).then((res) => {
-  //   if (res.data?.length > 0) {
-  //     setClubname(res.data[0].clubname);
-  //   }
-  // });
-
-  // const notification = {
-  //   notificationFromFirebaseId: senderFbid,
-  //   notificationType: "INVITE_TO_CLUB",
-  // };
-
   function invitePlayer() {
     if (managerClubname?.length > 0) {
       notifRef
@@ -106,23 +91,6 @@ function UserList(props) {
       alert("You don't have a club to invite to!");
     }
     setDisabledInviteButton(true);
-    // axios
-    //   .get("http://localhost:5000/clubs/managerfirebaseid/" + senderFbid)
-    //   .then((res) => {
-    //     console.log(res);
-    //     console.log(res.data.length);
-    //     if (res.data.length > 0) {
-    //       axios
-    //         .post(
-    //           "http://localhost:5000/users/notification/" + receiverFbid,
-    //           notification
-    //         )
-    //         .then((res) => console.log(res.data));
-    //       setDisabledInviteButton(true);
-    //     } else {
-    //       alert("You don't have a club to invite to!");
-    //     }
-    //   });
   }
 
   function hideRedditMessage() {
@@ -131,7 +99,7 @@ function UserList(props) {
 
   function clubBadgeShow() {
     if (clubid?.length > 0) {
-      return <BiShieldQuarter size="1.6em" color="darkgreen" />;
+      return <BiShieldQuarter size="1em" color="black" />;
     } else {
       return "";
     }

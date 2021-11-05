@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import firebaseApp from "./firebase";
 import { Link, useHistory } from "react-router-dom";
 import "./Lineup.css";
+import { MdExitToApp } from "react-icons/md";
+import { FaUserTie } from "react-icons/fa";
 
 function Lineup(props) {
   const [username, setUsername] = useState("");
@@ -10,7 +12,6 @@ function Lineup(props) {
   const [timezone, setTimezone] = useState("");
 
   const history = useHistory();
-  const currentUserid = firebaseApp.auth().currentUser.uid;
 
   const userid = props.userid;
   const isManager = props.isManager;
@@ -40,14 +41,20 @@ function Lineup(props) {
   }, []);
 
   function removePlayer() {
-    userRef.update({ clubid: "" });
-    lineupPlayerRef.remove();
-    history.push("/myclub");
+    if (window.confirm("Are you sure you want to remove this player?")) {
+      userRef.update({ clubid: "" });
+      lineupPlayerRef.remove();
+      history.push("/myclub");
+    }
   }
 
   function makeManager() {
-    clubRef.update({ managerid: userid });
-    window.location.reload();
+    if (
+      window.confirm("Are you sure you want to promote this player to manager?")
+    ) {
+      clubRef.update({ managerid: userid });
+      window.location.reload();
+    }
   }
 
   console.log(primaryposition);
@@ -63,20 +70,20 @@ function Lineup(props) {
       </td>
       <td>
         <button
-          className="remove__player__button"
-          hidden={hideRemoveAndMakeManagerButtons()}
-          onClick={() => removePlayer()}
-        >
-          Kick
-        </button>
-      </td>
-      <td>
-        <button
           className="make__manager__button"
           hidden={hideRemoveAndMakeManagerButtons()}
           onClick={() => makeManager()}
         >
-          Make Manager
+          <FaUserTie size="1.4em" />
+        </button>
+      </td>
+      <td>
+        <button
+          className="remove__player__button"
+          hidden={hideRemoveAndMakeManagerButtons()}
+          onClick={() => removePlayer()}
+        >
+          <MdExitToApp size="1.4em" />
         </button>
       </td>
     </tr>

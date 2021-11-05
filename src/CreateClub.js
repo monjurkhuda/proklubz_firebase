@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import firebaseApp from "./firebase.js";
 import "./CreateClub.css";
 import Navigation from "./Navigation.js";
@@ -74,10 +73,24 @@ function CreateClub() {
             className="createclub__select"
             onChange={(e) => setTimezone(e.target.value)}
           >
-            <option defaultValue value="EST">
-              EST
+            <option defaultValue value="British Isles">
+              British Isles
             </option>
-            <option value="EUR">EUR</option>
+            <option value="Western Europe">Western Europe</option>
+            <option value="Eastern Europe">Eastern Europe</option>
+            <option value="Northern Europe">Northern Europe</option>
+            <option value="Southern Europe">Southern Europe</option>
+            <option value="Eastern N.America">Eastern N.America</option>
+            <option value="Western N.America">Western N.America</option>
+            <option value="South America">South America</option>
+            <option value="Central America">Central America</option>
+            <option value="Northern Asia">Northern Asia</option>
+            <option value="Southern Asia">Southern Asia</option>
+            <option value="Central Asia">Central Asia</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Australia/New Zealand">Australia/New Zealand</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Middle East">Middle East</option>
           </select>
         </div>
 
